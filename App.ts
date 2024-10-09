@@ -1,6 +1,6 @@
 
 import express, {Response, Request, NextFunction} from "express";
-
+import globalErrorHandler from "./errors/errorController";
 
 
 
@@ -29,5 +29,7 @@ app.all("*", (req: Request, res : Response, next: NextFunction) => {
     
 
 })
+
+app.use(globalErrorHandler);
 
 export default app;
