@@ -12,12 +12,12 @@ type castError = mongoose.Error.CastError;
 type validatorError = mongoose.Error.ValidationError;
 
 //ERROR HANDLING FOR CAST ERROR
-
 const handleCastErrorDB = (err: castError): AppError => {
   const message = `Invalid input : ${err.value}`;
   return new AppError(message, 400);
 };
 
+//ERROR HANDLING FOR DUPLICATED FIELD
 const handleDuplicateFields = (err: mongoose.Error): AppError => {
   const match = err.message.match(/(["'])(\\?.)*?\1/);
   const value = match ? match[0] : "Unknown Value";
