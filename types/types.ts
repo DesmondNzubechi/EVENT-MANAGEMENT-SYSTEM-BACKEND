@@ -4,6 +4,7 @@ export interface userType {
   fullName: string;
   email: string;
   password: string;
+  role: string
   id: mongoose.ObjectId
   confirmPassword: string | undefined;
   correctPassword(

@@ -15,7 +15,12 @@ const userSchema = new Schema<userType>({
     unique: true,
     validate: [validator.isEmail, "Kindly provide a valid email"],
   },
-
+role: {
+type : String,
+required: true,
+enum: ['admin', 'user'],
+default: 'user'
+},
   password: {
     type: String,
     required: [true, "Kindly provide your password"],
@@ -39,6 +44,8 @@ userSchema.pre("save", async function (next) {
 
   return (this.confirmPassword = undefined);
 });
+
+
 
 userSchema.methods.correctPassword = async (
   userPassword: string,
