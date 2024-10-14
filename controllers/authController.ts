@@ -5,12 +5,14 @@ import { AppError } from "../errors/appError";
 import { config } from "dotenv";
 import jwt from "jsonwebtoken";
 import { verifyUserAndGetUser } from "../utils/verifyTokenAndGetUser";
+import { sendEmail } from "../utils/sendEmail";
 
 config({ path: "./config.env" });
 
-const { JWT_EXPIRES_IN, JWT_SECRET, JWT_COOKIE_EXPIRES } = process.env;
+const { JWT_EXPIRES_IN, JWT_SECRET, JWT_COOKIE_EXPIRES, ORIGIN_URL } =
+  process.env;
 
-if (!JWT_EXPIRES_IN || !JWT_SECRET || !JWT_COOKIE_EXPIRES) {
+if (!JWT_EXPIRES_IN || !JWT_SECRET || !JWT_COOKIE_EXPIRES || !ORIGIN_URL) {
   throw new AppError(
     "Kindly make sure that these env variable are defined",
     400
@@ -71,6 +73,7 @@ export const registerUser = catchAsync(
   }
 );
 
+//LOGIN USER
 export const loginUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
@@ -134,10 +137,11 @@ export const protectedRoute = catchAsync(async (req, res, next) => {
 export const updateMe = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
 
-  if(!token){
-    return next(new AppError("You are not authorized to perform this action.", 401));
+  if (!token) {
+    return next(
+      new AppError("You are not authorized to perform this action.", 401)
+    );
   }
-
 
   const user = await verifyUserAndGetUser(token, next);
 
@@ -180,43 +184,91 @@ export const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+export const changeUserPassword = catchAsync(async (req, res, next) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
-export const changeUserPassword = catchAsync(async(req, res, next) => {
-
-  const {currentPassword, newPassword, confirmNewPassword} = req.body;
-
-  if(!currentPassword || !newPassword || !confirmNewPassword){
-    return next(new AppError("Please provide the required field", 400))
+  if (!currentPassword || !newPassword || !confirmNewPassword) {
+    return next(new AppError("Please provide the required field", 400));
   }
 
-  if(newPassword !== confirmNewPassword){
-
-    return next(new AppError("new password and confirm password must be the same.", 400))
-
+  if (newPassword !== confirmNewPassword) {
+    return next(
+      new AppError("new password and confirm password must be the same.", 400)
+    );
   }
 
   const token = req.cookies.jwt;
 
-  if(!token){
-    return next(new AppError("You are not authorized to perform this action.", 401));
+  if (!token) {
+    return next(
+      new AppError("You are not authorized to perform this action.", 401)
+    );
   }
 
   const user = await verifyUserAndGetUser(token, next);
 
-  if(!user){
-    return next(new AppError("Could not fetch user with the token. Kindly login again.", 404))
+  if (!user) {
+    return next(
+      new AppError(
+        "Could not fetch user with the token. Kindly login again.",
+        404
+      )
+    );
   }
 
-const correctP = await user.correctPassword(currentPassword, user.password);
+  const correctP = await user.correctPassword(currentPassword, user.password);
 
-if(!correctP){
-  return next(new AppError("The password you provided is not the same with your current password. Please try agian", 400))
-}
+  if (!correctP) {
+    return next(
+      new AppError(
+        "The password you provided is not the same with your current password. Please try agian",
+        400
+      )
+    );
+  }
 
-user.password = newPassword
-user.confirmPassword = confirmNewPassword
-await user.save()
+  user.password = newPassword;
+  user.confirmPassword = confirmNewPassword;
+  await user.save();
 
-createAndSendTokenToUser(user, 200, "assword change successful.",res)
+  createAndSendTokenToUser(user, 200, "password change successful.", res);
+});
 
-})
+export const forgottPassword = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return next(new AppError("User does not exist with this email.", 404));
+  }
+
+  const resetToken = user.createResetPasswordToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `${ORIGIN_URL}/reset-password/${resetToken}`;
+
+  const message = `forgot your password? kindly reset your password using ${resetUrl}. If you did not request for this kindly ignore. This is only valid for 30 minutes`;
+
+  try {
+    sendEmail({
+      message,
+      subject: "RESET PASSWORD URL",
+      email: user.email,
+      name: user.fullName,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Token sent successful",
+    });
+  } catch (error) {
+    return next(
+      new AppError(
+        "An error occured while sending email. Please try again",
+        400
+      )
+    );
+  }
+});

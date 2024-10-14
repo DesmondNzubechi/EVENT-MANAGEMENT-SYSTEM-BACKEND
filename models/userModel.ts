@@ -3,6 +3,7 @@ import { userType } from "../types/types";
 import validator from "validator";
 import bcryptjs from "bcryptjs";
 const { model, Schema } = mongoose;
+import crypto from "crypto";
 
 const userSchema = new Schema<userType>({
   fullName: {
@@ -67,6 +68,19 @@ userSchema.methods.changePasswordAfter = function (
   }
 
   return false;
+};
+
+userSchema.methods.createResetPasswordToken = async function () {
+  const resetToken = await crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.passwordResetTokenExpires = Date.now() + 30 * 60 * 1000;
+
+  return resetToken;
 };
 
 const User = model("users", userSchema);

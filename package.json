@@ -19,6 +19,7 @@
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/nodemailer": "^6.4.16",
     "@types/validator": "^13.12.2",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
