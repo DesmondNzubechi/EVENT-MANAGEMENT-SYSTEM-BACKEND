@@ -11,4 +11,6 @@ export interface userType {
     userPassword: string,
     originalPassword: string
   ): Promise<boolean>;
+  changePasswordAfter(JWTTimestamp : string): boolean
+  passwordChangeAt?: Date
 }

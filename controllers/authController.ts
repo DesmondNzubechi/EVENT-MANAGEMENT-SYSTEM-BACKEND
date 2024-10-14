@@ -4,6 +4,7 @@ import catchAsync from "../utils/catchAsync";
 import { AppError } from "../errors/appError";
 import { config } from "dotenv";
 import jwt from "jsonwebtoken";
+import { verifyUserAndGetUser } from "../utils/verifyTokenAndGetUser";
 
 config({ path: "./config.env" });
 
@@ -85,3 +86,46 @@ export const loginUser = catchAsync(
     createAndSendTokenToUser(user, 200, "Login successful", res);
   }
 );
+
+
+//FETCH AUTHENTICATED USER INFORMATION
+
+export const fetchMe = catchAsync(async(req, res, next) => {
+
+  const token = req.cookies.jwt;
+
+  if(!token){
+    return next(new AppError("You are not authorised to access this route", 400))
+  }
+
+  const user = await verifyUserAndGetUser(token, next);
+
+  res.status(200).json({
+    status: "success",
+    message : "user fetched successfully",
+    data: {
+      user
+    }
+  })
+
+})
+
+
+
+export const protectedRoute = catchAsync(async(req, res, next) => {
+
+  const token = req.cookies.jwt;
+
+  if(!token){
+    return next(new AppError("You are not authorized to access this route", 400))
+  }
+
+  const user = await verifyUserAndGetUser(token, next);
+
+  if(!user){
+    return next(new AppError("User with this token does not exist or already expired", 400))
+  }
+
+next();
+
+})

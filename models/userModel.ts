@@ -15,12 +15,12 @@ const userSchema = new Schema<userType>({
     unique: true,
     validate: [validator.isEmail, "Kindly provide a valid email"],
   },
-role: {
-type : String,
-required: true,
-enum: ['admin', 'user'],
-default: 'user'
-},
+  role: {
+    type: String,
+    required: true,
+    enum: ["admin", "user"],
+    default: "user",
+  },
   password: {
     type: String,
     required: [true, "Kindly provide your password"],
@@ -45,13 +45,28 @@ userSchema.pre("save", async function (next) {
   return (this.confirmPassword = undefined);
 });
 
-
-
 userSchema.methods.correctPassword = async (
   userPassword: string,
   originalPassword: string
 ) => {
   return await bcryptjs.compare(userPassword, originalPassword);
+};
+
+userSchema.methods.changePasswordAfter = function (
+  JWTTimestamp: string | number
+): boolean {
+  if (this.passwordChangeAt) {
+    const jwtTimestamp =
+      typeof JWTTimestamp === "string"
+        ? parseInt(JWTTimestamp, 10)
+        : JWTTimestamp;
+
+    const changeTimestamp = this.passwordChangeAt.getTime() / 1000;
+
+    return jwtTimestamp < changeTimestamp;
+  }
+
+  return false;
 };
 
 const User = model("users", userSchema);
