@@ -87,45 +87,136 @@ export const loginUser = catchAsync(
   }
 );
 
-
 //FETCH AUTHENTICATED USER INFORMATION
-
-export const fetchMe = catchAsync(async(req, res, next) => {
-
+export const fetchMe = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
 
-  if(!token){
-    return next(new AppError("You are not authorised to access this route", 400))
+  if (!token) {
+    return next(
+      new AppError("You are not authorised to access this route", 400)
+    );
   }
 
   const user = await verifyUserAndGetUser(token, next);
 
   res.status(200).json({
     status: "success",
-    message : "user fetched successfully",
+    message: "user fetched successfully",
     data: {
-      user
+      user,
+    },
+  });
+});
+
+export const protectedRoute = catchAsync(async (req, res, next) => {
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    return next(
+      new AppError("You are not authorized to access this route", 400)
+    );
+  }
+
+  const user = await verifyUserAndGetUser(token, next);
+
+  if (!user) {
+    return next(
+      new AppError(
+        "User with this token does not exist or  token already expired",
+        400
+      )
+    );
+  }
+
+  next();
+});
+
+export const updateMe = catchAsync(async (req, res, next) => {
+  const token = req.cookies.jwt;
+
+  if(!token){
+    return next(new AppError("You are not authorized to perform this action.", 401));
+  }
+
+
+  const user = await verifyUserAndGetUser(token, next);
+
+  if (!user) {
+    return next(
+      new AppError(
+        "Could not find user with this token. please login again.",
+        404
+      )
+    );
+  }
+
+  const { email, fullName } = req.body;
+
+  if (!email || !fullName) {
+    return next(new AppError("Kindly provide the required field", 400));
+  }
+
+  const updateUser = await User.findByIdAndUpdate(
+    user.id,
+    { email, fullName },
+    {
+      runValidators: true,
+      new: true,
     }
-  })
+  );
 
-})
+  if (!updateMe) {
+    return next(
+      new AppError("Could not update user info. Please try again", 400)
+    );
+  }
+
+  res.status(200).json({
+    status: "success",
+    message: "User information successfully updated",
+    data: {
+      user: updateUser,
+    },
+  });
+});
 
 
+export const changeUserPassword = catchAsync(async(req, res, next) => {
 
-export const protectedRoute = catchAsync(async(req, res, next) => {
+  const {currentPassword, newPassword, confirmNewPassword} = req.body;
+
+  if(!currentPassword || !newPassword || !confirmNewPassword){
+    return next(new AppError("Please provide the required field", 400))
+  }
+
+  if(newPassword !== confirmNewPassword){
+
+    return next(new AppError("new password and confirm password must be the same.", 400))
+
+  }
 
   const token = req.cookies.jwt;
 
   if(!token){
-    return next(new AppError("You are not authorized to access this route", 400))
+    return next(new AppError("You are not authorized to perform this action.", 401));
   }
 
   const user = await verifyUserAndGetUser(token, next);
 
   if(!user){
-    return next(new AppError("User with this token does not exist or already expired", 400))
+    return next(new AppError("Could not fetch user with the token. Kindly login again.", 404))
   }
 
-next();
+const correctP = await user.correctPassword(currentPassword, user.password);
+
+if(!correctP){
+  return next(new AppError("The password you provided is not the same with your current password. Please try agian", 400))
+}
+
+user.password = newPassword
+user.confirmPassword = confirmNewPassword
+await user.save()
+
+createAndSendTokenToUser(user, 200, "assword change successful.",res)
 
 })
