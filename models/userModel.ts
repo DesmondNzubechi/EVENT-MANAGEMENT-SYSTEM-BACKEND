@@ -83,6 +83,7 @@ userSchema.methods.createResetPasswordToken = async function () {
   return resetToken;
 };
 
+
 const User = model("users", userSchema);
 
 export default User;

@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import { AppError } from '../errors/appError'
 import { configDotenv } from 'dotenv'
+import catchAsync from './catchAsync';
 
 configDotenv({path : "./config.env"});
 
@@ -15,9 +16,8 @@ export const sendEmail = async (options : any) => {
 
     try {
         const transporter = nodemailer.createTransport({
-            service: "gmail",
             host : EMAIL_HOST,
-            port : EMAIL_PORT,
+            port : Number(EMAIL_PORT),
             secure : true,
             auth : {
                 user : EMAIL_USERNAME,
@@ -41,3 +41,5 @@ export const sendEmail = async (options : any) => {
     }
 
 }
+
+

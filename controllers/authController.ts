@@ -6,6 +6,7 @@ import { config } from "dotenv";
 import jwt from "jsonwebtoken";
 import { verifyUserAndGetUser } from "../utils/verifyTokenAndGetUser";
 import { sendEmail } from "../utils/sendEmail";
+import crypto from "crypto";
 
 config({ path: "./config.env" });
 
@@ -272,3 +273,61 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
     );
   }
 });
+
+export const resetPassword = catchAsync(async (req, res, next) => {
+  const { token } = req.params;
+
+  const decodedToken = await crypto
+    .createHash("sha256")
+    .update("sha256")
+    .digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: decodedToken,
+    passwordresetTokenExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(new AppError("This token is invalid or already expired", 400));
+  }
+
+  const { password, confirmPassword } = req.body;
+
+  user.password = password;
+  user.confirmPassword = confirmPassword;
+  user.passwordresetTokenExpires = undefined;
+  user.passwordResetToken = undefined;
+
+  await user.save();
+
+  sendEmail({
+    message: "You have successfully reset your password",
+    subject: "PASSWORD RESET SUCCESSFUL",
+    email: user.email,
+    name: user.fullName,
+  });
+
+  res.status(200).json({
+    status: "success",
+    message: "You have successfully reset your password. Kindly Login again",
+  });
+});
+
+
+export const logoutUser = catchAsync(async(req, res, next) => {
+
+  const CookieOptions = {
+    secure : true,
+    httpOnly: true,
+    sammeSite: "none" as 'none',
+    expires: new Date(Date.now() + 1 * 1000)
+  };
+
+  res.cookie("jwt", "logout", CookieOptions);
+
+  res.status(200).json({
+    status: "success",
+    message: "Logout successful"
+});
+
+})
