@@ -1,5 +1,4 @@
 import jwt, { decode } from "jsonwebtoken";
-import catchAsync from "./catchAsync";
 import { NextFunction } from "express";
 import { config } from "dotenv";
 import { AppError } from "../errors/appError";

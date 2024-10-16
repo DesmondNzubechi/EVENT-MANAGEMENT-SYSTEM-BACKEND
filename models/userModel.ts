@@ -53,6 +53,8 @@ userSchema.methods.correctPassword = async (
   return await bcryptjs.compare(userPassword, originalPassword);
 };
 
+
+//CHANGE PASSWORD AFTER
 userSchema.methods.changePasswordAfter = function (
   JWTTimestamp: string | number
 ): boolean {

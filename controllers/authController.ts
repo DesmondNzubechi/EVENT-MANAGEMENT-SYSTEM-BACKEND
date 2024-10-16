@@ -97,7 +97,7 @@ export const fetchMe = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError("You are not authorised to access this route", 400)
+      new AppError("You are not authorised to access this route", 401)
     );
   }
 
@@ -234,6 +234,7 @@ export const changeUserPassword = catchAsync(async (req, res, next) => {
 
   createAndSendTokenToUser(user, 200, "password change successful.", res);
 });
+
 
 export const forgottPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
