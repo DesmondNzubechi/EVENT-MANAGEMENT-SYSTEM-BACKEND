@@ -1,10 +1,30 @@
 import express from "express";
 import { protectedRoute } from "../controllers/authController";
-import { createEvent } from "../controllers/eventController";
+import {
+  createEvent,
+  getAllEvent,
+  getAllPublishedEvents,
+  publishEvent,
+  unPublishEvent,
+  updateEvent,
+} from "../controllers/eventController";
 
 const router = express.Router();
 
 router.route("/createEvent").post(protectedRoute, createEvent);
 
+router.route("updateEvenet/:id").patch(protectedRoute, updateEvent);
 
-export default router
+router.route("/getAllEvent").get(protectedRoute, getAllEvent);
+
+router
+  .route("/getAllPublishedEvent")
+  .get(protectedRoute, getAllPublishedEvents);
+
+router.route("/publishEvent").patch(protectedRoute, publishEvent);
+
+router.route("/unPublishEvent").patch(protectedRoute, unPublishEvent);
+
+router.route("/deleteEvent/:id").patch(protectedRoute, unPublishEvent);
+
+export default router;
