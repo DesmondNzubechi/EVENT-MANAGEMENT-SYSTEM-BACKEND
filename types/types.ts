@@ -28,3 +28,7 @@ export interface eventType {
   location: string;
   status: string;
 }
+
+export interface bookingType {
+  
+}
