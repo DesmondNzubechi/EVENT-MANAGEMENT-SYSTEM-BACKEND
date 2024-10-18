@@ -235,7 +235,6 @@ export const changeUserPassword = catchAsync(async (req, res, next) => {
   createAndSendTokenToUser(user, 200, "password change successful.", res);
 });
 
-
 export const forgottPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
@@ -314,21 +313,18 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-
-export const logoutUser = catchAsync(async(req, res, next) => {
-
+export const logoutUser = catchAsync(async (req, res, next) => {
   const CookieOptions = {
-    secure : true,
+    secure: true,
     httpOnly: true,
-    sammeSite: "none" as 'none',
-    expires: new Date(Date.now() + 1 * 1000)
+    sammeSite: "none" as "none",
+    expires: new Date(Date.now() + 1 * 1000),
   };
 
   res.cookie("jwt", "logout", CookieOptions);
 
   res.status(200).json({
     status: "success",
-    message: "Logout successful"
+    message: "Logout successful",
+  });
 });
-
-})
