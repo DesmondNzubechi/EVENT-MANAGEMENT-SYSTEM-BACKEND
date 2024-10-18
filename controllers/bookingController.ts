@@ -1,5 +1,6 @@
 import { AppError } from "../errors/appError";
 import { Booking } from "../models/bookingModel";
+import { AppResponse } from "../utils/appResponse";
 import catchAsync from "../utils/catchAsync";
 import { verifyUserAndGetUser } from "../utils/verifyTokenAndGetUser";
 
@@ -31,11 +32,17 @@ export const createBooking = catchAsync(async (req, res, next) => {
     paymentStatus,
   });
 
-  res.status(201).json({
-    status: "success",
-    message: "An event successfully booked.",
-    data: {
-      data: booking,
-    },
-  });
+  return AppResponse(res, 201, "success", "Event successfully booked", booking);
+});
+
+export const getAllTheEvent = catchAsync(async (req, res, next) => {
+
+  const allBooking = await Booking.find().populate("event", "user");
+
+  if(!allBooking){
+    return next(new AppError("Could not fetch booked events. Please try again", 400))
+  }
+
+  return AppResponse(res, 200, "success", "booked event successfully fetched", allBooking)
+
 });
