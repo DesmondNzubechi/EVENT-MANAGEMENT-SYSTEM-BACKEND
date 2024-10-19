@@ -4,7 +4,7 @@ import catchAsync from "../utils/catchAsync";
 import { AppError } from "../errors/appError";
 import { config } from "dotenv";
 import jwt from "jsonwebtoken";
-import { verifyUserAndGetUser } from "../utils/verifyTokenAndGetUser";
+import { verifyTokenAndGetUser } from "../utils/verifyTokenAndGetUser";
 import { sendEmail } from "../utils/sendEmail";
 import crypto from "crypto";
 
@@ -19,7 +19,7 @@ if (!JWT_EXPIRES_IN || !JWT_SECRET || !JWT_COOKIE_EXPIRES || !ORIGIN_URL) {
     400
   );
 }
- 
+
 const signInToken = async (id: string) => {
   return jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 };
@@ -73,7 +73,7 @@ export const registerUser = catchAsync(
     });
   }
 );
- 
+
 //LOGIN USER
 export const loginUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -101,7 +101,7 @@ export const fetchMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  const user = await verifyUserAndGetUser(token, next);
+  const user = await verifyTokenAndGetUser(token, next);
 
   res.status(200).json({
     status: "success",
@@ -121,7 +121,7 @@ export const protectedRoute = catchAsync(async (req, res, next) => {
     );
   }
 
-  const user = await verifyUserAndGetUser(token, next);
+  const user = await verifyTokenAndGetUser(token, next);
 
   if (!user) {
     return next(
@@ -144,7 +144,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  const user = await verifyUserAndGetUser(token, next);
+  const user = await verifyTokenAndGetUser(token, next);
 
   if (!user) {
     return next(
@@ -185,8 +185,6 @@ export const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
 export const changeUserPassword = catchAsync(async (req, res, next) => {
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
@@ -208,7 +206,7 @@ export const changeUserPassword = catchAsync(async (req, res, next) => {
     );
   }
 
-  const user = await verifyUserAndGetUser(token, next);
+  const user = await verifyTokenAndGetUser(token, next);
 
   if (!user) {
     return next(
@@ -237,9 +235,6 @@ export const changeUserPassword = catchAsync(async (req, res, next) => {
   createAndSendTokenToUser(user, 200, "password change successful.", res);
 });
 
-
-
-
 export const forgottPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
@@ -264,7 +259,7 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
       email: user.email,
       name: user.fullName,
     });
- 
+
     res.status(200).json({
       status: "success",
       message: "Token sent successful",

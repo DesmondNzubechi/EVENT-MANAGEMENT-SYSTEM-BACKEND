@@ -2,6 +2,7 @@ import express, { Response, Request, NextFunction } from "express";
 import globalErrorHandler from "./errors/errorController";
 import authRoute from "../EVENT MANAGEMENT - BACKEND/routes/authRoute";
 import eventRoute from "../EVENT MANAGEMENT - BACKEND/routes/eventRoute";
+import bookingRoute from "../EVENT MANAGEMENT - BACKEND/routes/bookingRoute";
 const app = express();
 
 app.use(express.json());
@@ -21,6 +22,7 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/event", eventRoute);
+app.use("/api/v1/booking", bookingRoute);
 
 app.use(globalErrorHandler);
 

@@ -12,7 +12,7 @@ if (!JWT_SECRET) {
   throw new AppError("make sure the environmental variable is defined", 400);
 }
 
-export const verifyUserAndGetUser = async (
+export const verifyTokenAndGetUser = async (
   token: string,
   next: NextFunction
 ) => {
