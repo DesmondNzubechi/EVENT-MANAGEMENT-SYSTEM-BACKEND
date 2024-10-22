@@ -24,6 +24,22 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
   }
 
   const { eventId } = req.params;
+
+  const theEvent = await Events.findById(eventId);
+
+  if(!theEvent){
+    return next(new AppError("This event does not exist.", 404))
+  }
+
+  if(theEvent.availableTicket === 0 || theEvent.bookedTicket === theEvent.totalTicket){
+    return next(new AppError("You can't book this event again because the allocated Ticket has finished.", 400))
+  }
+
+  theEvent.availableTicket = theEvent.availableTicket--;
+  theEvent.bookedTicket = theEvent.bookedTicket++
+
+  await theEvent.save();
+
   const { paymentStatus, slots } = req.body;
 
   const booking = await Booking.create({
@@ -35,6 +51,8 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
 
   return AppResponse(res, 201, "success", "Event successfully booked", booking);
 });
+
+
 
 export const getAllTheEventBooked = catchAsync(async (req, res, next) => {
   const allBooking = await Booking.find().populate("event", "user");

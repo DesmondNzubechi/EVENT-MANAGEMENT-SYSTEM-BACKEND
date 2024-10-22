@@ -27,7 +27,12 @@ export interface eventType {
   price: number;
   location: string;
   status: string;
-}
+  totalTicket: number;
+  availableTicket: number;
+  bookedTicket : number;
+  bookieEmail: string[];
+  bookieId : mongoose.ObjectId[]
+} 
 
 export interface bookingType {
   

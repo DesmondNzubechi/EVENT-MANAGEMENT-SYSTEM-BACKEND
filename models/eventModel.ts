@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { eventType } from "../types/types";
+import validator from "validator";
 
 const { Schema, model } = mongoose;
 
@@ -39,6 +40,27 @@ const eventSchema = new Schema<eventType>({
     enum: ["published", "unpublished"],
     default: "unpublished",
   },
+  totalTicket :{
+    type: Number,
+    required: [true, "Kindly provide slot available for this event."]
+  },
+  availableTicket :{
+    type: Number,
+    required: [true, "Kindly provide slot available for this event."],
+  },
+  bookedTicket :{
+    type: Number,
+    required: [true, "Kindly provide slot available for this event."],
+    default: 0
+  },
+  bookieEmail : {
+    type : [String],
+   default : []
+  },
+  bookieId: {
+    type : [Schema.ObjectId],
+    default: []
+  }
 });
 
 export const Events = model("Events", eventSchema);

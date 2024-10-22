@@ -13,20 +13,20 @@ import {
 
 const router = express.Router();
 
-router.route("auth//register").post(registerUser);
+router.route("/register").post(registerUser);
 
-router.route("/auth/login").post(loginUser);
+router.route("/login").post(loginUser);
 
-router.route("/auth/fetchMe").get(protectedRoute, fetchMe);
+router.route("/fetchMe").get(protectedRoute, fetchMe);
 
-router.route("/auth/updateMe").patch(updateMe);
+router.route("/updateMe").patch(updateMe);
 
-router.route("/auth/changePassword").patch(changeUserPassword);
+router.route("/changePassword").patch(changeUserPassword);
 
-router.route("/auth/forgotPassword").post(forgottPassword);
+router.route("/forgotPassword").post(forgottPassword);
 
-router.route("/auth/resetPassword/:token").patch(resetPassword);
+router.route("/resetPassword/:token").patch(resetPassword);
 
-router.route("/auth/logout").post(logoutUser);
+router.route("/logout").post(logoutUser);
 
 export default router;

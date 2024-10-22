@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { verifyTokenAndGetUser } from "../utils/verifyTokenAndGetUser";
 import { sendEmail } from "../utils/sendEmail";
 import crypto from "crypto";
+import { AppResponse } from "../utils/appResponse";
 
 config({ path: "./config.env" });
 
@@ -53,8 +54,21 @@ const createAndSendTokenToUser = async (
 };
 
 export const registerUser = catchAsync(
+
   async (req: Request, res: Response, next: NextFunction) => {
+    
     const { fullName, email, password, confirmPassword } = req.body;
+
+    const userExist = await User.findOne({ email: email });
+
+    if (userExist) {
+      return next(
+        new AppError(
+          "User already exist with this email. If you are the one kindly login.",
+          400
+        )
+      );
+    }
 
     if (!fullName || !email || !password || !confirmPassword) {
       return next(new AppError("Kindly fill in the required field", 400));
@@ -79,9 +93,9 @@ export const loginUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email: email }).select("+password");
 
-    if (!user || (await user.correctPassword(password, user.password))) {
+    if (!user || !(await user.correctPassword(password, user.password))) {
       return next(
         new AppError("invalid email or password. Kindly try again", 400)
       );
@@ -250,7 +264,7 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
 
   const resetUrl = `${ORIGIN_URL}/reset-password/${resetToken}`;
 
-  const message = `forgot your password? kindly reset your password using ${resetUrl}. If you did not request for this kindly ignore. This is only valid for 30 minutes`;
+  const message = `forgot your password? kindly reset your password using ${resetUrl}. If you did not request for this kindly ignore. This is only valid for 30 minutes.`;
 
   try {
     sendEmail({
@@ -279,7 +293,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 
   const decodedToken = await crypto
     .createHash("sha256")
-    .update("sha256")
+    .update(token)
     .digest("hex");
 
   const user = await User.findOne({
@@ -307,10 +321,13 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     name: user.fullName,
   });
 
-  res.status(200).json({
-    status: "success",
-    message: "You have successfully reset your password. Kindly Login again",
-  });
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "You have successfully reset your password. Kindly Login again",
+    null
+  );
 });
 
 export const logoutUser = catchAsync(async (req, res, next) => {

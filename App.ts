@@ -16,13 +16,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  throw new Error("This route does not exist");
-});
-
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/event", eventRoute);
 app.use("/api/v1/booking", bookingRoute);
+
+app.all("*", (req: Request, res: Response, next: NextFunction) => {
+  throw new Error("This route does not exist");
+});
 
 app.use(globalErrorHandler);
 

@@ -1,13 +1,24 @@
 import { AppError } from "../errors/appError";
 import { Events } from "../models/eventModel";
+import User from "../models/userModel";
 import catchAsync from "../utils/catchAsync";
+import { sendEmail } from "../utils/sendEmail";
+import { configDotenv } from "dotenv";
+
+configDotenv({path : "./config.env"})
+
+const {ORIGIN_URL} = process.env;
+
+if(!ORIGIN_URL){
+   throw new AppError("Please make sure that this env variable is defined", 400)
+}
 
 
 //CREATE AN EVENT
 export const createEvent = catchAsync(async (req, res, next) => {
-  const { title, description, price, location, date } = req.body;
+  const { title, description, price, location, date, totalTicket } = req.body;
 
-  if (!title || !description || !price || !location || !date) {
+  if (!title || !description || !price || !location || !date || !totalTicket) {
     return next(new AppError("Kindly fill in the required field", 400));
   }
 
@@ -17,6 +28,7 @@ export const createEvent = catchAsync(async (req, res, next) => {
     price,
     location,
     date,
+    totalTicket
   });
 
   res.status(201).json({
@@ -57,23 +69,57 @@ export const getAllPublishedEvents = catchAsync(async (req, res, next) => {
 });
 
 
-//UPDATE AN EVENT POST
+// UPDATE AN EVENT POST
 export const updateEvent = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
+  // Update the event
   const event = await Events.findByIdAndUpdate(id, req.body, {
     runValidators: true,
     new: true,
   });
 
+  // Handle case when event is not found
+  if (!event) {
+    return next(new AppError("Something went wrong. Please try again", 400));
+  }
+
+  // Get list of bookie IDs from the event
+  const bookieIds = event.bookieId;
+
+  // Fetch all users (bookies) who booked the event
+  const allBookies = await User.find({ _id: { $in: bookieIds } });
+
+  // Get all emails and full names
+  const allEmails = allBookies.map(bookie => bookie.email);
+  const allNames = allBookies.map(bookie => bookie.fullName);
+ 
+  // Event URL for users to check the update
+  const eventUrl = `${ORIGIN_URL}/events/${event.id}`;
+
+  // Message to be sent
+  const message = `There is a new update to the event that you are attending. Kindly check it here: ${eventUrl}`;
+
+  // Loop through each bookie and send an individual email
+  for (let i = 0; i < allBookies.length; i++) {
+    await sendEmail({
+      message: message,
+      subject: "Your Event Update",
+      email: allEmails[i],
+      name: allNames[i],
+    });
+  }
+
+  // Respond with success after the event and emails are updated
   res.status(200).json({
     status: "success",
-    message: "Event successfully updated",
+    message: "Event successfully updated, and emails sent to users",
     data: {
       event,
     },
   });
 });
+
 
 
 
@@ -122,6 +168,7 @@ export const unPublishEvent = catchAsync(async (req, res, next) => {
     });
   });
   
+
 
 
   //DELETE EVENT

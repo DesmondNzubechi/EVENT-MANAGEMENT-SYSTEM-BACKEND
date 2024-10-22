@@ -39,12 +39,15 @@ const userSchema = new Schema<userType>({
 });
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) return next();
+  if (!this.isModified("password")) return next();
 
   this.password = await bcryptjs.hash(this.password, 12);
 
-  return (this.confirmPassword = undefined);
+this.confirmPassword = undefined
+
+next()
 });
+
 
 userSchema.methods.correctPassword = async (
   userPassword: string,
