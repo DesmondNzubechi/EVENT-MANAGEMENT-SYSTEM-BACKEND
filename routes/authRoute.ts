@@ -17,9 +17,9 @@ router.route("/register").post(registerUser);
 
 router.route("/login").post(loginUser);
 
-router.route("/fetchMe").get(protectedRoute, fetchMe);
+router.route("/fetchMe").get(fetchMe);
 
-router.route("/updateMe").patch(updateMe);
+router.route("/updateMe").patch(protectedRoute, updateMe);
 
 router.route("/changePassword").patch(changeUserPassword);
 
@@ -28,5 +28,5 @@ router.route("/forgotPassword").post(forgottPassword);
 router.route("/resetPassword/:token").patch(resetPassword);
 
 router.route("/logout").post(logoutUser);
-
+ 
 export default router;

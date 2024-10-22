@@ -3,7 +3,11 @@ import globalErrorHandler from "./errors/errorController";
 import authRoute from "../EVENT MANAGEMENT - BACKEND/routes/authRoute";
 import eventRoute from "../EVENT MANAGEMENT - BACKEND/routes/eventRoute";
 import bookingRoute from "../EVENT MANAGEMENT - BACKEND/routes/bookingRoute";
+import cookieParser from "cookie-parser";
+
 const app = express();
+
+app.use(cookieParser())
 
 app.use(express.json());
 

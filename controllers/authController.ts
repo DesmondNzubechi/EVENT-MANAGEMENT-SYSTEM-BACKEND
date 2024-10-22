@@ -25,6 +25,8 @@ const signInToken = async (id: string) => {
   return jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 };
 
+
+
 const createAndSendTokenToUser = async (
   user: any,
   statusCode: number,
@@ -56,7 +58,7 @@ const createAndSendTokenToUser = async (
 export const registerUser = catchAsync(
 
   async (req: Request, res: Response, next: NextFunction) => {
-    
+
     const { fullName, email, password, confirmPassword } = req.body;
 
     const userExist = await User.findOne({ email: email });
@@ -117,6 +119,13 @@ export const fetchMe = catchAsync(async (req, res, next) => {
 
   const user = await verifyTokenAndGetUser(token, next);
 
+  if (!user) {
+    return next(
+      new AppError("An error occured. Please try again", 400)
+    );
+  }
+
+
   res.status(200).json({
     status: "success",
     message: "user fetched successfully",
@@ -131,7 +140,7 @@ export const protectedRoute = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError("You are not authorized to access this route", 400)
+      new AppError("You are not authorized to access this route", 401)
     );
   }
 
