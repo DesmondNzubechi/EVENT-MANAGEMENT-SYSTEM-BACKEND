@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import { eventType } from "../types/types";
-import validator from "validator";
 
 const { Schema, model } = mongoose;
 
@@ -46,7 +45,8 @@ const eventSchema = new Schema<eventType>({
   },
   availableTicket :{
     type: Number,
-    required: [true, "Kindly provide slot available for this event."],
+    required: [true, "Kindly provide the quantity of ticket available for this event."],
+    default : 0
   },
   bookedTicket :{
     type: Number,
@@ -60,7 +60,7 @@ const eventSchema = new Schema<eventType>({
   bookieId: {
     type : [Schema.ObjectId],
     default: []
-  }
+  } 
 });
 
 export const Events = model("Events", eventSchema);

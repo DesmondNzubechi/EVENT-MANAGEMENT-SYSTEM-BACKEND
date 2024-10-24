@@ -16,9 +16,9 @@ const bookingSchema = new Schema<bookingType>({
     type: String,
     required: [true, "Paytment status is required"],
   },
-  slots: {
+  ticketQuantity: {
     type: Number,
-    required: [true, "Kindly input the slots you are booking."],
+    required: [true, "Kindly input the quantity of ticket you are booking."],
   },
   dateBooked: {
     type: Date,

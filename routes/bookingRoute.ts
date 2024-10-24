@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.route("/bookEvent").post(protectedRoute, createEventBooking);
+router.route("/bookEvent/:eventId").post(protectedRoute, createEventBooking);
 
 router
   .route("/getAllTheEventBookings")

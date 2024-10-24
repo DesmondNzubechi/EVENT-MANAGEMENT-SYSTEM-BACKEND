@@ -10,6 +10,7 @@ import {
   resetPassword,
   updateMe,
 } from "../controllers/authController";
+import { buyEventTicket } from "../controllers/paymentController";
 
 const router = express.Router();
 
@@ -26,6 +27,8 @@ router.route("/changePassword").patch(changeUserPassword);
 router.route("/forgotPassword").post(forgottPassword);
 
 router.route("/resetPassword/:token").patch(resetPassword);
+
+router.route("/pay").get(buyEventTicket);
 
 router.route("/logout").post(logoutUser);
  

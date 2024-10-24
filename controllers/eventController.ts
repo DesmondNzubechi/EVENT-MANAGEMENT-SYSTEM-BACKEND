@@ -1,18 +1,18 @@
 import { AppError } from "../errors/appError";
 import { Events } from "../models/eventModel";
 import User from "../models/userModel";
+import { userType } from "../types/types";
 import catchAsync from "../utils/catchAsync";
 import { sendEmail } from "../utils/sendEmail";
 import { configDotenv } from "dotenv";
 
-configDotenv({path : "./config.env"})
+configDotenv({ path: "./config.env" });
 
-const {ORIGIN_URL} = process.env;
+const { ORIGIN_URL } = process.env;
 
-if(!ORIGIN_URL){
-   throw new AppError("Please make sure that this env variable is defined", 400)
+if (!ORIGIN_URL) {
+  throw new AppError("Please make sure that this env variable is defined", 400);
 }
-
 
 //CREATE AN EVENT
 export const createEvent = catchAsync(async (req, res, next) => {
@@ -28,10 +28,40 @@ export const createEvent = catchAsync(async (req, res, next) => {
     price,
     location,
     date,
-    totalTicket
+    totalTicket,
+    availableTicket: totalTicket,
   });
 
+  if (!event) {
+    return next(
+      new AppError(
+        "An error occured while creating this event. Please try again",
+        400
+      )
+    );
+  }
+
+  const allUser = await User.find();
+
+  const allUserEmail: string[] = allUser.map((user: userType) => user.email);
+  const allUserFullname: string[] = allUser.map(
+    (user: userType) => user.fullName
+  );
+
+  const eventUrl = `${ORIGIN_URL}/events/${event.id}`;
+  const message = `There is a new event for you! I know you would not want to miss it. Kindly check it out: ${eventUrl}`;
+
+  for (let i = 0; i < allUser.length; i++) {
+    await sendEmail({
+      name: allUserFullname[i],
+      email: allUserEmail[i],
+      message: message,
+      subject: "YOU HAVE NEW EVENT TO CHECK OUT",
+    });
+  }
+
   res.status(201).json({
+    
     status: "success",
     message: "event successfully created",
     data: {
@@ -39,7 +69,6 @@ export const createEvent = catchAsync(async (req, res, next) => {
     },
   });
 });
-
 
 //FETCH ALL CREATED EVENT
 export const getAllEvent = catchAsync(async (req, res, next) => {
@@ -54,7 +83,6 @@ export const getAllEvent = catchAsync(async (req, res, next) => {
   });
 });
 
-
 //FETCH ALL PUBLISHED EVENT
 export const getAllPublishedEvents = catchAsync(async (req, res, next) => {
   const events = await Events.find({ status: "published" });
@@ -67,7 +95,6 @@ export const getAllPublishedEvents = catchAsync(async (req, res, next) => {
     },
   });
 });
-
 
 // UPDATE AN EVENT POST
 export const updateEvent = catchAsync(async (req, res, next) => {
@@ -91,9 +118,9 @@ export const updateEvent = catchAsync(async (req, res, next) => {
   const allBookies = await User.find({ _id: { $in: bookieIds } });
 
   // Get all emails and full names
-  const allEmails = allBookies.map(bookie => bookie.email);
-  const allNames = allBookies.map(bookie => bookie.fullName);
- 
+  const allEmails = allBookies.map((bookie) => bookie.email);
+  const allNames = allBookies.map((bookie) => bookie.fullName);
+
   // Event URL for users to check the update
   const eventUrl = `${ORIGIN_URL}/events/${event.id}`;
 
@@ -120,9 +147,6 @@ export const updateEvent = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
-
 //PUBLISH AN EVENT POST
 export const publishEvent = catchAsync(async (req, res, next) => {
   const { id } = req.params;
@@ -145,44 +169,40 @@ export const publishEvent = catchAsync(async (req, res, next) => {
   });
 });
 
-
 //UNPUBLISH AN EVENT POST
 export const unPublishEvent = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-  
-    const event = await Events.findByIdAndUpdate(
-      id,
-      { status: "unpublished" },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-  
-    res.status(200).json({
-      status: "success",
-      message: "Event successfully unpublish",
-      data: {
-        event,
-      },
-    });
+  const { id } = req.params;
+
+  const event = await Events.findByIdAndUpdate(
+    id,
+    { status: "unpublished" },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    status: "success",
+    message: "Event successfully unpublish",
+    data: {
+      event,
+    },
   });
-  
+});
 
+//DELETE EVENT
+exports.deleteAnEvent = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
 
+  await Events.findByIdAndDelete(id, req.body);
 
-  //DELETE EVENT
-  exports.deleteAnEvent = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-
-    await Events.findByIdAndDelete(id, req.body);
-
-    //SUCCESS RESPONSE
-    res.status(200).json({
-        status: "success",
-        message: "An event deleted successfully",
-        data: {
-           data: null
-        }
-    })
-})
+  //SUCCESS RESPONSE
+  res.status(200).json({
+    status: "success",
+    message: "An event deleted successfully",
+    data: {
+      data: null,
+    },
+  });
+});
