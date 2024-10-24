@@ -36,6 +36,14 @@ const userSchema = new Schema<userType>({
       message: "Password and confirm password must be the same.",
     },
   },
+  emailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationCode:Number,
+  emailVerificationCodeExpires: Date,
+  passwordResetToken: String,
+  passwordResetTokenExpires: Date, 
 });
 
 userSchema.pre("save", async function (next) {
@@ -55,7 +63,7 @@ userSchema.methods.correctPassword = async (
 ) => {
   return await bcryptjs.compare(userPassword, originalPassword);
 };
-
+ 
 
 //CHANGE PASSWORD AFTER
 userSchema.methods.changePasswordAfter = function (

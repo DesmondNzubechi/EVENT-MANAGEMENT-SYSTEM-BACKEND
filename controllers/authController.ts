@@ -8,6 +8,7 @@ import { verifyTokenAndGetUser } from "../utils/verifyTokenAndGetUser";
 import { sendEmail } from "../utils/sendEmail";
 import crypto from "crypto";
 import { AppResponse } from "../utils/appResponse";
+import { generatEmailVerificationCode } from "../utils/emailVerificationCode";
 
 config({ path: "./config.env" });
 
@@ -24,8 +25,6 @@ if (!JWT_EXPIRES_IN || !JWT_SECRET || !JWT_COOKIE_EXPIRES || !ORIGIN_URL) {
 const signInToken = async (id: string) => {
   return jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 };
-
-
 
 const createAndSendTokenToUser = async (
   user: any,
@@ -56,9 +55,7 @@ const createAndSendTokenToUser = async (
 };
 
 export const registerUser = catchAsync(
-
   async (req: Request, res: Response, next: NextFunction) => {
-
     const { fullName, email, password, confirmPassword } = req.body;
 
     const userExist = await User.findOne({ email: email });
@@ -83,12 +80,33 @@ export const registerUser = catchAsync(
       confirmPassword,
     });
 
+    const verificationCode = await generatEmailVerificationCode();
+    const verificationMessage =
+      "Thank you for signing up for The Uevent! To start booking your favorite events, please verify your email using the verification code below. Note: This code will expire in 30 minutes.";
+
+    user.emailVerificationCode = verificationCode;
+    user.emailVerificationCodeExpires = Date.now() + 30 * 60 * 1000;
+
+    await user.save();
+
+    sendEmail({
+      name: user.fullName,
+      email: user.email,
+      subject: "VERIFY YOUR EMAIL",
+      message: verificationMessage,
+      vCode: verificationCode,
+      link: ORIGIN_URL,
+      linkName: "Visit our website",
+    });
+
     res.status(201).json({
       status: "success",
       message: "user registration successful. Kindly login",
     });
   }
 );
+
+
 
 //LOGIN USER
 export const loginUser = catchAsync(
@@ -103,9 +121,43 @@ export const loginUser = catchAsync(
       );
     }
 
-    createAndSendTokenToUser(user, 200, "Login successful", res);
+    if (!user.emailVerified) {
+      const verificationCode = await generatEmailVerificationCode();
+      const verificationMessage =
+        "You haven't verified your email since signing up for The Uevent. Please verify your email using the code below to start booking your favorite events. Note, the code expires in 30 minutes.";
+
+      user.emailVerificationCode = verificationCode;
+      user.emailVerificationCodeExpires = Date.now() + 30 * 60 * 1000;
+
+      await user.save({ validateBeforeSave: false });
+
+      sendEmail({
+        name: user.fullName,
+        email: user.email,
+        subject: "VERIFY YOUR EMAIL",
+        message: verificationMessage,
+        vCode: verificationCode,
+        link: ORIGIN_URL,
+        linkName: "Visit our website",
+      });
+    }
+
+    if (user.emailVerified) {
+      createAndSendTokenToUser(user, 200, "Login successful", res);
+    } else {
+      return AppResponse(
+        res,
+        200,
+        "success",
+        "Login successful. Kindly verify your email to access your dashboard",
+        user.id
+      );
+    }
+
   }
 );
+
+
 
 //FETCH AUTHENTICATED USER INFORMATION
 export const fetchMe = catchAsync(async (req, res, next) => {
@@ -120,11 +172,8 @@ export const fetchMe = catchAsync(async (req, res, next) => {
   const user = await verifyTokenAndGetUser(token, next);
 
   if (!user) {
-    return next(
-      new AppError("An error occured. Please try again", 400)
-    );
+    return next(new AppError("An error occured. Please try again", 400));
   }
-
 
   res.status(200).json({
     status: "success",
@@ -134,6 +183,9 @@ export const fetchMe = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+
+
 
 export const protectedRoute = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -157,6 +209,8 @@ export const protectedRoute = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+
 
 export const updateMe = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -208,6 +262,11 @@ export const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+
+
+
+
+
 export const changeUserPassword = catchAsync(async (req, res, next) => {
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
@@ -258,6 +317,14 @@ export const changeUserPassword = catchAsync(async (req, res, next) => {
   createAndSendTokenToUser(user, 200, "password change successful.", res);
 });
 
+
+
+
+
+
+
+
+
 export const forgottPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
@@ -273,14 +340,16 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
 
   const resetUrl = `${ORIGIN_URL}/reset-password/${resetToken}`;
 
-  const message = `forgot your password? kindly reset your password using ${resetUrl}. If you did not request for this kindly ignore. This is only valid for 30 minutes.`;
+  const message = `forgot your password? kindly reset your password by clicking the link below. If you did not request for this kindly ignore. This is only valid for 30 minutes.`;
 
   try {
     sendEmail({
       message,
-      subject: "RESET PASSWORD URL",
+      subject: "RESET PASSWORD Link",
       email: user.email,
       name: user.fullName,
+      link: resetUrl,
+      linkName: "Reset Password",
     });
 
     res.status(200).json({
@@ -296,6 +365,15 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
     );
   }
 });
+
+
+
+
+
+
+
+
+
 
 export const resetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
@@ -318,16 +396,19 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 
   user.password = password;
   user.confirmPassword = confirmPassword;
-  user.passwordresetTokenExpires = undefined;
+  user.passwordResetTokenExpires = undefined;
   user.passwordResetToken = undefined;
 
   await user.save();
 
   sendEmail({
-    message: "You have successfully reset your password",
+    message:
+      "You have successfully reset your password. Kindly login back using the link below",
     subject: "PASSWORD RESET SUCCESSFUL",
     email: user.email,
     name: user.fullName,
+    link: ORIGIN_URL,
+    linkName: "Login",
   });
 
   return AppResponse(
@@ -338,6 +419,108 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     null
   );
 });
+
+
+
+
+
+export const sendVerificationCode = catchAsync(async (req, res, next) => {
+  
+  const { userId } = req.params;
+
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return next(new AppError("User does not exist", 404));
+  }
+
+  if (user.emailVerified) {
+    return next(new AppError("User email already verified. Kindly login", 400));
+  }
+
+
+
+})
+
+
+
+export const verifyUserEmail = catchAsync(async (req, res, next) => {
+  const { verificationCode } = req.body;
+
+  if (!verificationCode) {
+    return next(
+      new AppError(
+        "Kindly provide the verification code sent to your email.",
+        400
+      )
+    );
+  }
+
+  const user = await User.findOne({ emailVerificationCode: verificationCode });
+
+  if (!user) {
+    return next(
+      new AppError(
+        "Wrong verification code or if you did not get any code try resending it.",
+        400
+      )
+    );
+  }
+
+  if (user.emailVerified) {
+    return next(
+      new AppError(
+        "User Email already verified. Kindly proceed to login.",
+        400
+      )
+    );
+  }
+
+
+  if (user.emailVerificationCodeExpires < Date.now()) {
+    return next(
+      new AppError("Verification code expired. Kindly send another one.", 400)
+    );
+  }
+
+  user.emailVerificationCode = null;
+  (user.emailVerificationCodeExpires = null), (user.emailVerified = true);
+
+  await user.save({ validateBeforeSave: false });
+
+    const verificationMessage =
+      "You have successfully verified your email. You can now proceed to login";
+
+
+    sendEmail({
+      name: user.fullName,
+      email: user.email,
+      subject: "EMAIL VERIFICATION SUCCESSFUL",
+      message: verificationMessage,
+      vCode: verificationCode,
+      link: `${ORIGIN_URL}/login`,
+      linkName: "Login Here",
+    });
+
+
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "You have successfully verified your email. Kindly Login again",
+    null
+  );
+});
+
+
+
+
+
+
+
+
+
+
 
 export const logoutUser = catchAsync(async (req, res, next) => {
   const CookieOptions = {

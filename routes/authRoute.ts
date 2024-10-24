@@ -9,6 +9,7 @@ import {
   registerUser,
   resetPassword,
   updateMe,
+  verifyUserEmail,
 } from "../controllers/authController";
 import { buyEventTicket } from "../controllers/paymentController";
 
@@ -27,6 +28,8 @@ router.route("/changePassword").patch(changeUserPassword);
 router.route("/forgotPassword").post(forgottPassword);
 
 router.route("/resetPassword/:token").patch(resetPassword);
+
+router.route("/verifyEmail").patch(verifyUserEmail);
 
 router.route("/pay").get(buyEventTicket);
 

@@ -24,47 +24,126 @@ export const sendEmail = async (options : any) => {
                 pass : EMAIL_PASSWORD
             }
         })
-
         const emailTemplate = `
         <html>
           <head>
             <style>
-              /* Some basic inline styles for email */
-              body { font-family: Arial, sans-serif; color: #333; }
-              .email-container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { text-align: center; padding: 10px; background-color: #f4f4f4; }
-              .header img { max-width: 150px; }
-              .content { padding: 20px; background-color: #fff; border: 1px solid #ddd; }
-              .footer { text-align: center; color: #777; font-size: 12px; margin-top: 20px; }
-              .button { background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; display: inline-block; border-radius: 5px; text-decoration: none; }
+              /* Basic reset */
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+              }
+              body {
+                font-family: Arial, sans-serif;
+                background-color: #f7f7f7;
+                color: #333;
+                line-height: 1.6;
+              }
+              .email-container {
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+              }
+              .header {
+                background-color: #1e88e5;
+                color: #ffffff;
+                text-align: center;
+                padding: 20px;
+              }
+              .header img {
+                max-width: 150px;
+                margin-bottom: 10px;
+              }
+              .header h1 {
+                font-size: 24px;
+                margin-bottom: 10px;
+              }
+              .content {
+                padding: 20px;
+              }
+              .content h2 {
+                font-size: 20px;
+                color: #1e88e5;
+                margin-bottom: 15px;
+              }
+              .content p {
+                font-size: 16px;
+                margin-bottom: 20px;
+                color: #555;
+              }
+              .code {
+                font-size: 24px;
+                color: #1e88e5;
+                margin: 20px 0;
+                text-align: center;
+              }
+              .button {
+                display: inline-block;
+                background-color: #1e88e5;
+                color: #ffffff;
+                padding: 12px 20px;
+                text-align: center;
+                border-radius: 5px;
+                text-decoration: none;
+                font-size: 16px;
+                margin: 20px 0;
+                width: 100%;
+              }
+              .button:hover {
+                background-color: #1565c0;
+              }
+              .footer {
+                background-color: #f4f4f4;
+                text-align: center;
+                padding: 20px;
+                font-size: 12px;
+                color: #777;
+              }
+              .footer p {
+                margin: 5px 0;
+              }
+              /* Responsive */
+              @media (max-width: 600px) {
+                .email-container {
+                  width: 100%;
+                }
+                .content, .header, .footer {
+                  padding: 15px;
+                }
+              }
             </style>
           </head>
           <body>
-           <!--
             <div class="email-container">
-              Company Logo
+              <!-- Header Section with Logo and Company Name -->
               <div class="header">
-                <img src="https://example.com/logo.png" alt="Company Logo" />
+                <h1>The Uevents</h1>
               </div>
-               -->
-              <!-- Main content area -->
+        
+              <!-- Main Content Area -->
               <div class="content">
                 <h2>Hello, ${options.name}!</h2>
                 <p>${options.message}</p>
-  
-                <!-- Button that links somewhere -->
-                <a href="https://yourcompany.com" class="button">Visit our Website</a>
+                <div class="code">Your verification code: <strong>${options.vCode}</strong></div>
+        
+                <!-- Action Button -->
+                <a href="${options.link}" class="button">${options.linkName}</a>
               </div>
-  
-              <!-- Footer section -->
+        
+              <!-- Footer Section -->
               <div class="footer">
-                <p>Company Name | Address | Contact</p>
-                <p>&copy; 2024 Your Company. All rights reserved.</p>
+                <p>The Uevent | Enugu, Nigeria | nzubechukwu@gmail.com</p>
+                <p>&copy; 2024 The Uevents. All rights reserved.</p>
               </div>
             </div>
           </body>
         </html>
-      `;
+        `;
+        
 
         const mailOptions = {
             to: options.email,

@@ -15,7 +15,10 @@ export interface userType {
   createResetPasswordToken(): string;
   passwordChangeAt?: Date;
   passwordResetToken?: string;
-  passwordresetTokenExpires?: Date;
+  passwordResetTokenExpires?: Date;
+  emailVerificationCode?: number | null
+  emailVerificationCodeExpires?: Date | unknown | any
+  emailVerified : boolean
 }
 
 export interface eventType {

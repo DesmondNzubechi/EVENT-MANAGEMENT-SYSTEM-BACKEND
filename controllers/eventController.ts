@@ -41,27 +41,8 @@ export const createEvent = catchAsync(async (req, res, next) => {
     );
   }
 
-  const allUser = await User.find();
-
-  const allUserEmail: string[] = allUser.map((user: userType) => user.email);
-  const allUserFullname: string[] = allUser.map(
-    (user: userType) => user.fullName
-  );
-
-  const eventUrl = `${ORIGIN_URL}/events/${event.id}`;
-  const message = `There is a new event for you! I know you would not want to miss it. Kindly check it out: ${eventUrl}`;
-
-  for (let i = 0; i < allUser.length; i++) {
-    await sendEmail({
-      name: allUserFullname[i],
-      email: allUserEmail[i],
-      message: message,
-      subject: "YOU HAVE NEW EVENT TO CHECK OUT",
-    });
-  }
-
   res.status(201).json({
-    
+
     status: "success",
     message: "event successfully created",
     data: {
@@ -159,6 +140,34 @@ export const publishEvent = catchAsync(async (req, res, next) => {
       runValidators: true,
     }
   );
+
+  if (!event) {
+  return next(new AppError("Something went wrong while publishing this event. Please try again", 400))
+}
+  
+  const allUser = await User.find();
+
+  if (!allUser) {
+    return next(new AppError("Could not fetch users to update them about this event. Please try again", 400))
+  }
+
+  const allUserEmail: string[] = allUser.map((user: userType) => user.email);
+  const allUserFullname: string[] = allUser.map(
+    (user: userType) => user.fullName
+  );
+
+  const eventUrl = `${ORIGIN_URL}/events/${event.id}`;
+  const message = `There is a new event for you! I know you would not want to miss it. Kindly check it out: ${eventUrl}`;
+
+  for (let i = 0; i < allUser.length; i++) {
+    await sendEmail({
+      name: allUserFullname[i],
+      email: allUserEmail[i],
+      message: message,
+      subject: "YOU HAVE NEW EVENT TO CHECK OUT",
+    });
+  }
+
 
   res.status(200).json({
     status: "success",
