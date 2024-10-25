@@ -1,4 +1,4 @@
-import mongoose, { Date } from "mongoose";
+import mongoose, { Date, ObjectId } from "mongoose";
 
 export interface userType {
   fullName: string;
@@ -36,8 +36,16 @@ export interface eventType {
   bookieEmail: string[];
   bookieId: mongoose.ObjectId[];
   image: string
+  id?: ObjectId
 } 
 
 export interface bookingType {
-  
+  user: userType
+  event: eventType
+  paymentStatus: string
+  ticketQuantity: number
+  dateBooked: Date
+  paymentReference: string
+  dateConfirmed: Date
+  receiptUrl: string
 }

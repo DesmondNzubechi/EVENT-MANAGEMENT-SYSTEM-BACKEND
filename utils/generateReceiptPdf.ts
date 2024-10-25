@@ -15,20 +15,26 @@ export const generateReceiptPdf = (receiptDetails: any): Promise<Buffer> => {
         // Add a logo or header image (if you have one)
         // doc.image('path/to/logo.png', 50, 45, { width: 100 });
 
+
         // Add title
-        doc.fontSize(25).font('Helvetica-Bold').text('Event Receipt', { align: 'center', underline: true });
+        doc.fontSize(25).font('Helvetica-Bold').text(`Payment Receipt For ${receiptDetails.title} Ticket`, { align: 'center', });
         doc.moveDown(); // Move down after the title
 
         // Add receipt details
-        doc.fontSize(16).font('Helvetica').text(`User Name: ${receiptDetails.fullName}`, { continued: true })
-           .text(` - Email: ${receiptDetails.email}`);
+        doc.fontSize(16).font('Helvetica').text(`User Name: ${receiptDetails.fullName}`)
+        doc.moveDown();
+        doc.fontSize(16).font('Helvetica').text(`Email: ${receiptDetails.email}`);
         doc.moveDown();
         
-        doc.text(`Message: ${receiptDetails.message}`);
+
         doc.text(`Event: ${receiptDetails.title}`);
+        doc.moveDown();
         doc.text(`Amount Paid: ${receiptDetails.price}`);
+        doc.moveDown();
         doc.text(`Date: ${receiptDetails.date}`);
+        doc.moveDown();
         doc.text(`Ticket Number: ${receiptDetails.ticketNumber}`);
+        doc.moveDown();
         doc.text(`Event Location: ${receiptDetails.location}`);
         
         // Add a footer with italic text

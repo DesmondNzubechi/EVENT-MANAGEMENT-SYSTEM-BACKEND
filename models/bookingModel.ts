@@ -10,7 +10,7 @@ const bookingSchema = new Schema<bookingType>({
   },
   event: {
     type: Schema.ObjectId,
-    ref: "events",
+    ref: "Events",
   },
   paymentStatus: {
     type: String,
@@ -32,6 +32,9 @@ const bookingSchema = new Schema<bookingType>({
   dateConfirmed: {
     type: Date,
     default : Date.now
+  },
+  receiptUrl: {
+    type : String
   }
 });
 
