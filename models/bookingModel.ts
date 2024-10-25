@@ -15,15 +15,24 @@ const bookingSchema = new Schema<bookingType>({
   paymentStatus: {
     type: String,
     required: [true, "Paytment status is required"],
+    enum: ["confirmed", "pending"],
+    default: 'pending'
   },
   ticketQuantity: {
     type: Number,
-    required: [true, "Kindly input the quantity of ticket you are booking."],
+    default : 1
   },
   dateBooked: {
     type: Date,
     default: Date.now,
   },
+  paymentReference: {
+    type : String
+  },
+  dateConfirmed: {
+    type: Date,
+    default : Date.now
+  }
 });
 
 export const Booking = model("bookings", bookingSchema);

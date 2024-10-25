@@ -40,10 +40,10 @@ const userSchema = new Schema<userType>({
     type: Boolean,
     default: false,
   },
-  emailVerificationCode:Number,
+  emailVerificationCode: Number,
   emailVerificationCodeExpires: Date,
   passwordResetToken: String,
-  passwordResetTokenExpires: Date, 
+  passwordResetTokenExpires: Date,
 });
 
 userSchema.pre("save", async function (next) {
@@ -51,11 +51,10 @@ userSchema.pre("save", async function (next) {
 
   this.password = await bcryptjs.hash(this.password, 12);
 
-this.confirmPassword = undefined
+  this.confirmPassword = undefined;
 
-next()
+  next();
 });
-
 
 userSchema.methods.correctPassword = async (
   userPassword: string,
@@ -63,7 +62,6 @@ userSchema.methods.correctPassword = async (
 ) => {
   return await bcryptjs.compare(userPassword, originalPassword);
 };
- 
 
 //CHANGE PASSWORD AFTER
 userSchema.methods.changePasswordAfter = function (
@@ -95,7 +93,6 @@ userSchema.methods.createResetPasswordToken = async function () {
 
   return resetToken;
 };
-
 
 const User = model("users", userSchema);
 

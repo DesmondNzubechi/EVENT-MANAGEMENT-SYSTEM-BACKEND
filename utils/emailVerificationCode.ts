@@ -11,7 +11,7 @@ export const generatEmailVerificationCode = async () => {
 
     if (!userExistWithCode) {
       isCodeUnique = true;
-    }
+    } 
   }
   return emailVerificationCode;
 };

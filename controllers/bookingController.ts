@@ -6,6 +6,9 @@ import catchAsync from "../utils/catchAsync";
 import { verifyTokenAndGetUser } from "../utils/verifyTokenAndGetUser";
 import https from "https";
 import { configDotenv } from "dotenv";
+import { sendEventBookingEmail } from "../utils/sendBookingEmail";
+import { generateReceiptPdf } from "../utils/generateReceiptPdf";
+import { uploadFileToCloudinary } from "../utils/uploadToCloudinary";
 
 configDotenv({ path: "./config.env" });
 
@@ -59,8 +62,7 @@ configDotenv({ path: "./config.env" });
 
 export const createEventBooking = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
-  const { ticketQuantity } = req.body;
- 
+
   if (!token) {
     return next(
       new AppError(
@@ -94,7 +96,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
   //     )
   //   );
   // }
- 
+
   if (
     theEvent.availableTicket === 0 ||
     theEvent.bookedTicket === theEvent.totalTicket
@@ -143,7 +145,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
         {
           display_name: "Event Date",
           variable_name: "eventDate",
-          value: theEvent.date, 
+          value: theEvent.date,
         },
         {
           display_name: "Event Location",
@@ -160,7 +162,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
           variable_name: "timeBooked",
           value: new Date().toISOString(),
         },
-      ],
+      ], 
     },
   });
 
@@ -189,28 +191,57 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
         // Payment initialization was successful
         const paymentReference = response.data.reference;
 
-        // Proceed with booking logic
-        theEvent.availableTicket--;
-        theEvent.bookedTicket++;
+        // // Proceed with booking logic
+        // theEvent.availableTicket--;
+        // theEvent.bookedTicket++;
 
-        await theEvent.save();
+        // await theEvent.save();
 
         const booking = await Booking.create({
           user: user.id,
           event: eventId,
-          ticketQuantity,
-          paymentStatus: "pending", // Initially set as pending until payment confirmation
           paymentReference, // Store payment reference for verification later
         });
+const message = "Thank you for booking your event with The Uevent! Kindly confirm the payment if you have completed the payment so that the payment receipt will be sent to you. "
+      
 
+        const receiptDetails = {
+          fullName: user.fullName,
+          message: message,
+          title: theEvent.title,
+          price: theEvent.price,
+          location: theEvent.location,
+        date : theEvent.date,
+          email: user.email,
+          ticketNumber
+        }
+
+        const receiptBuffer = await generateReceiptPdf(receiptDetails)
+
+        const receiptUrl = await uploadFileToCloudinary(receiptBuffer)
+
+        sendEventBookingEmail({
+          fullName: user.fullName,
+          message: message,
+          title: theEvent.title,
+          price: theEvent.price,
+          location: theEvent.location,
+        date : theEvent.date,
+          email: user.email,
+          link: receiptUrl.secure_url,
+          linkName: "download receipt",
+          subject: "CONFIRM YOUR TICKET PAYMENT",
+          paymentStatus : "pending"
+        })
         return AppResponse(
           res,
           201,
           "success",
-          "Payment initiated, event successfully booked. Complete payment to confirm booking.",
+          "Payment initiated, event successfully booked. Check you email after completing the payment to confirm booking.",
           {
             booking,
             paymentUrl: response.data.authorization_url, // Send the payment URL to the user
+            receiptUrl : receiptUrl.secure_url
           }
         );
       } else {
@@ -228,17 +259,21 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
 
   reqPaystack.write(params);
   reqPaystack.end();
-  // Payment Integration End
+ 
 });
 
 
-export const confirmBooking = catchAsync(async(req, res, next) => {
 
-  const {bookingId} = req.params;
 
-  
 
-})
+
+
+
+
+export const confirmBooking = catchAsync(async (req, res, next) => {
+  const { bookingId } = req.params;
+});
+
 
 
 export const getAllTheEventBooked = catchAsync(async (req, res, next) => {
