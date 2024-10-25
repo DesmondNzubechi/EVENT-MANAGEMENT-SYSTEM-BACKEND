@@ -8,10 +8,11 @@ import {
   unPublishEvent,
   updateEvent,
 } from "../controllers/eventController";
+import { uploadImageToMemory } from "../controllers/uploadEventImage";
 
 const router = express.Router();
 
-router.route("/createEvent").post(protectedRoute, createEvent);
+router.route("/createEvent").post(protectedRoute, uploadImageToMemory, createEvent);
 
 router.route("updateEvenet/:id").patch(protectedRoute, updateEvent);
 

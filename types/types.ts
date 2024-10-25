@@ -34,7 +34,8 @@ export interface eventType {
   availableTicket: number;
   bookedTicket : number;
   bookieEmail: string[];
-  bookieId : mongoose.ObjectId[]
+  bookieId: mongoose.ObjectId[];
+  image: string
 } 
 
 export interface bookingType {

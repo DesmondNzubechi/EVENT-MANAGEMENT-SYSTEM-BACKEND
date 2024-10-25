@@ -57,6 +57,10 @@ const eventSchema = new Schema<eventType>({
     type : [String],
    default : []
   },
+  image: {
+    type: String,
+    required : [true, "Kindly provide an image for this event"]
+  },
   bookieId: {
     type : [Schema.ObjectId],
     default: []

@@ -5,6 +5,9 @@ import { userType } from "../types/types";
 import catchAsync from "../utils/catchAsync";
 import { sendEmail } from "../utils/sendEmail";
 import { configDotenv } from "dotenv";
+import { sendEventEmail } from "../utils/sendEventEmail";
+import { AppResponse } from "../utils/appResponse";
+import { uploadFileToCloudinary } from "../utils/uploadToCloudinary";
 
 configDotenv({ path: "./config.env" });
 
@@ -22,6 +25,12 @@ export const createEvent = catchAsync(async (req, res, next) => {
     return next(new AppError("Kindly fill in the required field", 400));
   }
 
+  if (!req.file) {
+    return next(new AppError("Kindly upload an image for this event", 400))
+  }
+
+  const imageUrl = await uploadFileToCloudinary(req.file.buffer, "images", "image", 'jpg')
+
   const event = await Events.create({
     title,
     description,
@@ -30,6 +39,7 @@ export const createEvent = catchAsync(async (req, res, next) => {
     date,
     totalTicket,
     availableTicket: totalTicket,
+    image : imageUrl.secure_url
   });
 
   if (!event) {
@@ -42,7 +52,6 @@ export const createEvent = catchAsync(async (req, res, next) => {
   }
 
   res.status(201).json({
-
     status: "success",
     message: "event successfully created",
     data: {
@@ -55,26 +64,44 @@ export const createEvent = catchAsync(async (req, res, next) => {
 export const getAllEvent = catchAsync(async (req, res, next) => {
   const events = await Events.find();
 
-  res.status(200).json({
-    status: "success",
-    message: "events successfully fetched",
-    data: {
-      events,
-    },
-  });
+  if (!events) {
+    return next(
+      new AppError(
+        "An error occured while fetching this. Please try again",
+        400
+      )
+    );
+  }
+
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "events successfully fetched",
+    events
+  );
 });
 
 //FETCH ALL PUBLISHED EVENT
 export const getAllPublishedEvents = catchAsync(async (req, res, next) => {
   const events = await Events.find({ status: "published" });
 
-  res.status(200).json({
-    status: "success",
-    message: "published events successfully fetched",
-    data: {
-      events,
-    },
-  });
+  if (!events) {
+    return next(
+      new AppError(
+        "An error occured while fetching this. Please try again",
+        400
+      )
+    );
+  }
+
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "published events successfully fetched",
+    events
+  );
 });
 
 // UPDATE AN EVENT POST
@@ -106,26 +133,28 @@ export const updateEvent = catchAsync(async (req, res, next) => {
   const eventUrl = `${ORIGIN_URL}/events/${event.id}`;
 
   // Message to be sent
-  const message = `There is a new update to the event that you are attending. Kindly check it here: ${eventUrl}`;
+  const message = `There is a new update to the event that you are attending. Kindly check it below.`;
 
   // Loop through each bookie and send an individual email
   for (let i = 0; i < allBookies.length; i++) {
-    await sendEmail({
+    await sendEventEmail({
       message: message,
-      subject: "Your Event Update",
+      subject: "YOUR EVENT UPDATE",
       email: allEmails[i],
       name: allNames[i],
+      link: `${ORIGIN_URL}/events/${event.id}`,
+      linkName: "view event",
     });
   }
 
   // Respond with success after the event and emails are updated
-  res.status(200).json({
-    status: "success",
-    message: "Event successfully updated, and emails sent to users",
-    data: {
-      event,
-    },
-  });
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "Event successfully updated, and emails sent to users",
+    event
+  );
 });
 
 //PUBLISH AN EVENT POST
@@ -142,13 +171,23 @@ export const publishEvent = catchAsync(async (req, res, next) => {
   );
 
   if (!event) {
-  return next(new AppError("Something went wrong while publishing this event. Please try again", 400))
-}
-  
+    return next(
+      new AppError(
+        "Something went wrong while publishing this event. Please try again",
+        400
+      )
+    );
+  }
+
   const allUser = await User.find();
 
   if (!allUser) {
-    return next(new AppError("Could not fetch users to update them about this event. Please try again", 400))
+    return next(
+      new AppError(
+        "Could not fetch users to update them about this event. Please try again",
+        400
+      )
+    );
   }
 
   const allUserEmail: string[] = allUser.map((user: userType) => user.email);
@@ -157,7 +196,7 @@ export const publishEvent = catchAsync(async (req, res, next) => {
   );
 
   const eventUrl = `${ORIGIN_URL}/events/${event.id}`;
-  const message = `There is a new event for you! I know you would not want to miss it. Kindly check it out: ${eventUrl}`;
+  const message = `There is a new event for you! I know you won't want to miss it. Kindly check it out!`;
 
   for (let i = 0; i < allUser.length; i++) {
     await sendEmail({
@@ -165,17 +204,18 @@ export const publishEvent = catchAsync(async (req, res, next) => {
       email: allUserEmail[i],
       message: message,
       subject: "YOU HAVE NEW EVENT TO CHECK OUT",
+      link: eventUrl,
+      linkName: "View Event",
     });
   }
 
-
-  res.status(200).json({
-    status: "success",
-    message: "Event successfully published",
-    data: {
-      event,
-    },
-  });
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "Event successfully published",
+    event
+  );
 });
 
 //UNPUBLISH AN EVENT POST
@@ -191,13 +231,13 @@ export const unPublishEvent = catchAsync(async (req, res, next) => {
     }
   );
 
-  res.status(200).json({
-    status: "success",
-    message: "Event successfully unpublish",
-    data: {
-      event,
-    },
-  });
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "Event successfully unpublish",
+    event
+  );
 });
 
 //DELETE EVENT
@@ -207,11 +247,11 @@ exports.deleteAnEvent = catchAsync(async (req, res, next) => {
   await Events.findByIdAndDelete(id, req.body);
 
   //SUCCESS RESPONSE
-  res.status(200).json({
-    status: "success",
-    message: "An event deleted successfully",
-    data: {
-      data: null,
-    },
-  });
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "An event deleted successfully",
+    null
+  );
 });

@@ -218,7 +218,7 @@ const message = "Thank you for booking your event with The Uevent! Kindly confir
 
         const receiptBuffer = await generateReceiptPdf(receiptDetails)
 
-        const receiptUrl = await uploadFileToCloudinary(receiptBuffer)
+        const receiptUrl = await uploadFileToCloudinary(receiptBuffer, "receipts", "raw", "pdf")
 
         sendEventBookingEmail({
           fullName: user.fullName,
