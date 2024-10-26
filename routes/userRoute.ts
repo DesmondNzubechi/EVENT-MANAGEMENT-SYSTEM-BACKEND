@@ -1,5 +1,5 @@
 import express from "express";
-import { protectedRoute } from "../controllers/authController";
+import { protectedRoute, restrictedRoute } from "../controllers/authController";
 
 import {
   createAUser,
@@ -11,14 +11,24 @@ import {
 
 const router = express.Router();
 
-router.route("/createUser").post(createAUser);
+router
+  .route("/createUser")
+  .post(protectedRoute, restrictedRoute("admin"), createAUser);
 
-router.route("/getAUser").get(getAUser);
+router
+  .route("/getAUser")
+  .get(protectedRoute, restrictedRoute("admin"), getAUser);
 
-router.route("/getAllUser").get(protectedRoute, getAllUser);
+router
+  .route("/getAllUser")
+  .get(protectedRoute, restrictedRoute("admin"), getAllUser);
 
-router.route("/deleteAUser").patch(deleteAUser);
+router
+  .route("/deleteAUser")
+  .patch(protectedRoute, restrictedRoute("admin"), deleteAUser);
 
-router.route("/updateAUser").patch(updateUser);
+router
+  .route("/updateAUser")
+  .patch(protectedRoute, restrictedRoute("admin"), updateUser);
 
 export default router;

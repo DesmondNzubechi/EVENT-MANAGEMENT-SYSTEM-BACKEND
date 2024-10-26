@@ -1,9 +1,10 @@
 import express from "express";
-import { protectedRoute } from "../controllers/authController";
+import { protectedRoute, restrictedRoute } from "../controllers/authController";
 import {
   createEvent,
   getAllEvent,
   getAllPublishedEvents,
+  getAllUnPublishedEvents,
   publishEvent,
   unPublishEvent,
   updateEvent,
@@ -12,20 +13,41 @@ import { uploadImageToMemory } from "../controllers/uploadEventImage";
 
 const router = express.Router();
 
-router.route("/createEvent").post(protectedRoute, uploadImageToMemory, createEvent);
+router
+  .route("/createEvent")
+  .post(
+    protectedRoute,
+    restrictedRoute("admin"),
+    uploadImageToMemory,
+    createEvent
+  );
 
-router.route("updateEvenet/:id").patch(protectedRoute, updateEvent);
+router
+  .route("updateEvenet/:id")
+  .patch(protectedRoute, restrictedRoute("admin"), updateEvent);
 
-router.route("/getAllEvent").get(protectedRoute, getAllEvent);
+router
+  .route("/getAllEvent")
+  .get(protectedRoute, restrictedRoute("admin"), getAllEvent);
 
 router
   .route("/getAllPublishedEvent")
   .get(protectedRoute, getAllPublishedEvents);
 
-router.route("/publishEvent").patch(protectedRoute, publishEvent);
+router
+  .route("/getAllUnpublishedEvent")
+  .get(protectedRoute, restrictedRoute("admin"), getAllUnPublishedEvents);
 
-router.route("/unPublishEvent").patch(protectedRoute, unPublishEvent);
+router
+  .route("/publishEvent")
+  .patch(protectedRoute, restrictedRoute("admin"), publishEvent);
 
-router.route("/deleteEvent/:id").patch(protectedRoute, unPublishEvent);
+router
+  .route("/unPublishEvent")
+  .patch(protectedRoute, restrictedRoute("admin"), unPublishEvent);
+
+router
+  .route("/deleteEvent/:id")
+  .patch(protectedRoute, restrictedRoute("admin"), unPublishEvent);
 
 export default router;

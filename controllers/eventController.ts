@@ -59,7 +59,7 @@ export const createEvent = catchAsync(async (req, res, next) => {
     },
   });
 });
-
+ 
 //FETCH ALL CREATED EVENT
 export const getAllEvent = catchAsync(async (req, res, next) => {
   const events = await Events.find();
@@ -100,6 +100,28 @@ export const getAllPublishedEvents = catchAsync(async (req, res, next) => {
     200,
     "success",
     "published events successfully fetched",
+    events
+  );
+});
+
+
+export const getAllUnPublishedEvents = catchAsync(async (req, res, next) => {
+  const events = await Events.find({ status: "unpublished" });
+
+  if (!events) {
+    return next(
+      new AppError(
+        "An error occured while fetching this. Please try again",
+        400
+      )
+    );
+  }
+
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "unpublished events successfully fetched",
     events
   );
 });

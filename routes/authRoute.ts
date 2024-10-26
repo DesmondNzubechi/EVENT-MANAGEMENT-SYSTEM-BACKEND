@@ -31,8 +31,6 @@ router.route("/resetPassword/:token").patch(resetPassword);
 
 router.route("/verifyEmail").patch(verifyUserEmail);
 
-router.route("/pay").get(buyEventTicket);
-
 router.route("/logout").post(logoutUser);
- 
+
 export default router;
