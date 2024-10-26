@@ -54,6 +54,7 @@ const createAndSendTokenToUser = async (
   });
 };
 
+//REGISTER USER
 export const registerUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { fullName, email, password, confirmPassword } = req.body;
@@ -101,7 +102,8 @@ export const registerUser = catchAsync(
 
     res.status(201).json({
       status: "success",
-      message: "user registration successful. Kindly verify your account using the code that was sent to the email you provided.",
+      message:
+        "user registration successful. Kindly verify your account using the code that was sent to the email you provided.",
     });
   }
 );
@@ -179,7 +181,7 @@ export const fetchMe = catchAsync(async (req, res, next) => {
   });
 });
 
-
+//PROTECTED ROUTE
 export const protectedRoute = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
 
@@ -203,6 +205,20 @@ export const protectedRoute = catchAsync(async (req, res, next) => {
   next();
 });
 
+export const restrictedRoute = (...role: string[]) => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.cookies.jwt;
+
+    const user = await verifyTokenAndGetUser(token, next);
+
+    if (!user || !role.includes(user.role)) {
+      return next(
+        new AppError("You are restricted from accessing this route", 401)
+      );
+    }
+    next();
+  });
+};
 
 export const updateMe = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -498,7 +514,7 @@ export const logoutUser = catchAsync(async (req, res, next) => {
   const CookieOptions = {
     secure: true,
     httpOnly: true,
-    sammeSite: "none" as "none",
+    sameSite: "none" as "none",
     expires: new Date(Date.now() + 1 * 1000),
   };
 
