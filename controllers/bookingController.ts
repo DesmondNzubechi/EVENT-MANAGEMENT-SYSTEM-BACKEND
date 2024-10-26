@@ -12,6 +12,8 @@ import { uploadFileToCloudinary } from "../utils/uploadToCloudinary";
 
 configDotenv({ path: "./config.env" });
 
+const { ORIGIN_URL, TEST_URL } = process.env;
+
 export const createEventBooking = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
 
@@ -55,7 +57,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
   const params = JSON.stringify({
     email: user.email, // Use the logged-in user's email
     amount: theEvent.price * 100, // Multiply by 100 because Paystack expects the amount in kobo (smallest currency unit)
-    callback_url: "https://example.com/",
+    callback_url: ORIGIN_URL,
     metadata: {
       custom_fields: [
         {
@@ -113,7 +115,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
     path: "/transaction/initialize",
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.TEST_URL}`,
+      Authorization: `Bearer ${TEST_URL}`,
       "Content-Type": "application/json",
     },
   };
@@ -184,107 +186,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
   reqPaystack.end();
 });
 
-// export const confirmBooking = catchAsync(async (req, res, next) => {
-//   const { bookingId } = req.params;
-
-//   const booking = await Booking.findById(bookingId)
-//     .populate("events")
-//     .populate("user");
-
-//   if (!booking) {
-//     return next(
-//       new AppError(
-//         "Could not find booking. Make sure you booked this event",
-//         400
-//       )
-//     );
-//   }
-
-//   const event = await Events.findById(booking.event);
-
-//   if (!event) {
-//     return next(new AppError("Event no found!", 400));
-//   }
-
-// const options = {
-//   hostname: 'api.paystack.co',
-//   port: 443,
-//   path: `/transaction/verify/${booking.paymentReference}`,
-//   method: 'GET',
-//   headers: {
-//     Authorization: `Bearer ${process.env.TEST_URL}`
-//   }
-// }
-
-// https.request(options, res => {
-//   let data = ''
-
-//   res.on('data', (chunk) => {
-//     data += chunk
-//   });
-
-//   const response = JSON.parse(data);
-
-//   if (response.data.status) {
-
-//   const ticketNumber = booking.event.bookedTicket + 1;
-
-//   const message =
-//     "Kindly confirm the payment if you have completed the payment so that the payment receipt will be sent to you. ";
-
-//   const receiptDetails = {
-//     fullName: booking.user.fullName,
-//     message: message,
-//     title: booking.event.title,
-//     price: booking.event.price,
-//     location: booking.event.location,
-//     date: booking.event.date,
-//     email: booking.user.email,
-//     ticketNumber,
-//   };
-
-//   const receiptBuffer = await generateReceiptPdf(receiptDetails);
-
-//   const receiptUrl = await uploadFileToCloudinary(
-//     receiptBuffer,
-//     "receipts",
-//     "raw",
-//     "pdf"
-//   );
-
-//   event.bookedTicket = event.bookedTicket++;
-//   event.availableTicket = event.availableTicket--;
-//   event.bookieEmail.push(booking.user.email);
-//   booking.paymentStatus = "Confirmed";
-//   booking.receiptUrl = receiptUrl.secure_url;
-
-//   await event.save();
-//   await booking.save();
-
-//   sendEventBookingEmail({
-//     fullName: receiptDetails.fullName,
-//     message: message,
-//     title: receiptDetails.title,
-//     price: receiptDetails.price,
-//     location: receiptDetails.location,
-//     date: receiptDetails.date,
-//     email: receiptDetails.email,
-//     link: receiptUrl.secure_url,
-//     linkName: "download receipt",
-//     subject: "EVENT TICKET PAYMENT RECEIPT",
-//     paymentStatus: "Confirmed",
-//   });
-//   }
-
-//   res.on('end', () => {
-//     console.log(JSON.parse(data))
-//   })
-// }).on('error', error => {
-//   console.error(error)
-// })
-
-// });
-
+//CONFIRM EVENT BOOKING AND SEND PAYMENT RECEIPT
 export const confirmBooking = catchAsync(async (req, res, next) => {
   const { bookingId } = req.params;
 
@@ -402,6 +304,7 @@ export const confirmBooking = catchAsync(async (req, res, next) => {
   }
 });
 
+//FETCH ALL BOOKED EVENT
 export const getAllTheEventBooked = catchAsync(async (req, res, next) => {
   const allBooking = await Booking.find().populate("Events").populate("users");
 
@@ -416,6 +319,27 @@ export const getAllTheEventBooked = catchAsync(async (req, res, next) => {
     200,
     "success",
     "booked event successfully fetched",
+    allBooking
+  );
+});
+
+//FETCH ALL BOOKED EVENT
+export const getAllConfirmedEventBooked = catchAsync(async (req, res, next) => {
+  const allBooking = await Booking.find({ paymentStatus: "confirmed" })
+    .populate("Events")
+    .populate("users");
+
+  if (!allBooking) {
+    return next(
+      new AppError("Could not fetch booked events. Please try again", 400)
+    );
+  }
+
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "All confirmed booked event successfully fetched",
     allBooking
   );
 });
@@ -435,9 +359,9 @@ export const getAUserEventBookings = catchAsync(async (req, res, next) => {
     return next(new AppError("Something went wrong. Please try again", 400));
   }
 
-  const userBookings = await Events.findById(user.id).populate("events");
+  const userBookings = await Booking.find({user : user.id}).populate("events");
 
-  if (!user) {
+  if (!userBookings) {
     return next(
       new AppError("Could not fetch booking by the user. please try again", 400)
     );
