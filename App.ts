@@ -3,6 +3,7 @@ import globalErrorHandler from "./errors/errorController";
 import authRoute from "../EVENT MANAGEMENT - BACKEND/routes/authRoute";
 import eventRoute from "../EVENT MANAGEMENT - BACKEND/routes/eventRoute";
 import bookingRoute from "../EVENT MANAGEMENT - BACKEND/routes/bookingRoute";
+import userRoute from '../EVENT MANAGEMENT - BACKEND/routes/userRoute'
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/event", eventRoute);
 app.use("/api/v1/booking", bookingRoute);
+app.use("/api/v1/user", userRoute);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   throw new Error("This route does not exist");

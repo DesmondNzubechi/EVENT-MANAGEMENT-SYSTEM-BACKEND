@@ -179,6 +179,7 @@ export const fetchMe = catchAsync(async (req, res, next) => {
   });
 });
 
+
 export const protectedRoute = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
 
@@ -201,6 +202,7 @@ export const protectedRoute = catchAsync(async (req, res, next) => {
 
   next();
 });
+
 
 export const updateMe = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;

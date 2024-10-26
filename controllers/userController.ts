@@ -23,7 +23,7 @@ if (!JWT_EXPIRES_IN || !JWT_SECRET || !JWT_COOKIE_EXPIRES || !ORIGIN_URL) {
 }
 
 //FOR FETCHING ALL THE USER
-exports.getAllUser = catchAsync(async (req, res, next) => {
+export const getAllUser = catchAsync(async (req, res, next) => {
   const users = await User.find();
   if (!users) {
     return next(new AppError("Something went wrong. Please try again", 400));
@@ -32,7 +32,7 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
 });
 
 //FOR FETCHING A USER USING ITS ID
-exports.getAUser = catchAsync(async (req, res, next) => {
+export const getAUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   const theUser = await User.findById(id);
@@ -96,7 +96,7 @@ export const createAUser = catchAsync(async (req, res, next) => {
 });
 
 //FOR UPDATING USER INFO
-exports.updateMe = catchAsync(async (req, res, next) => {
+export const updateUser = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const userUpdateInfo = req.body;
 
@@ -128,7 +128,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   );
 });
 
-exports.deleteAUser = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.params.id, { active: false });
+
+export const deleteAUser = catchAsync(async (req, res, next) => {
+
+    await User.findByIdAndUpdate(req.params.id, { active: false });
+    
   return AppResponse(res, 204, "success", "deleted successfully", null);
 });
