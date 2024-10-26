@@ -101,7 +101,7 @@ export const registerUser = catchAsync(
 
     res.status(201).json({
       status: "success",
-      message: "user registration successful. Kindly login",
+      message: "user registration successful. Kindly verify your account using the code that was sent to the email you provided.",
     });
   }
 );

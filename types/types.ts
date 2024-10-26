@@ -18,7 +18,8 @@ export interface userType {
   passwordResetTokenExpires?: Date;
   emailVerificationCode?: number | null
   emailVerificationCodeExpires?: Date | unknown | any
-  emailVerified : boolean
+  emailVerified: boolean
+  active: boolean
 }
 
 export interface eventType {

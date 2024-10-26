@@ -40,6 +40,11 @@ const userSchema = new Schema<userType>({
     type: Boolean,
     default: false,
   },
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
+  },
   emailVerificationCode: Number,
   emailVerificationCodeExpires: Date,
   passwordResetToken: String,
