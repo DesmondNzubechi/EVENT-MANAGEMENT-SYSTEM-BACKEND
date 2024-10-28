@@ -17,7 +17,7 @@ router
 
 router
   .route("/getAllTheEventBookings")
-  .get(protectedRoute, restrictedRoute("admin"), getAllTheEventBooked);
+  .get(protectedRoute, restrictedRoute(["admin"]), getAllTheEventBooked);
 
 router.route("/getUserBookedEvent").get(protectedRoute, getAUserEventBookings);
 

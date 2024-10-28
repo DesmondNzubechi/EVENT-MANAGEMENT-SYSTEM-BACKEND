@@ -17,18 +17,18 @@ router
   .route("/createEvent")
   .post(
     protectedRoute,
-    restrictedRoute("admin"),
+    restrictedRoute(["admin"]),
     uploadImageToMemory,
     createEvent
   );
 
 router
   .route("updateEvenet/:id")
-  .patch(protectedRoute, restrictedRoute("admin"), updateEvent);
+  .patch(protectedRoute, restrictedRoute(["admin", "super-admin"]), updateEvent);
 
 router
   .route("/getAllEvent")
-  .get(protectedRoute, restrictedRoute("admin"), getAllEvent);
+  .get(protectedRoute, restrictedRoute(["admin"]), getAllEvent);
 
 router
   .route("/getAllPublishedEvent")
@@ -36,18 +36,19 @@ router
 
 router
   .route("/getAllUnpublishedEvent")
-  .get(protectedRoute, restrictedRoute("admin"), getAllUnPublishedEvents);
+  .get(protectedRoute, restrictedRoute(["admin"]), getAllUnPublishedEvents);
 
 router
   .route("/publishEvent")
-  .patch(protectedRoute, restrictedRoute("admin"), publishEvent);
+  .patch(protectedRoute, restrictedRoute(["admin"]), publishEvent);
 
 router
   .route("/unPublishEvent")
-  .patch(protectedRoute, restrictedRoute("admin"), unPublishEvent);
+  .patch(protectedRoute, restrictedRoute(["admin"]), unPublishEvent);
 
 router
   .route("/deleteEvent/:id")
-  .patch(protectedRoute, restrictedRoute("admin"), unPublishEvent);
+  .patch(protectedRoute, restrictedRoute(["admin"]), unPublishEvent);
 
 export default router;
+ 

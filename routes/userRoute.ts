@@ -13,22 +13,22 @@ const router = express.Router();
 
 router
   .route("/createUser")
-  .post(protectedRoute, restrictedRoute("admin"), createAUser);
+  .post(protectedRoute, restrictedRoute(["admin"]), createAUser);
 
 router
   .route("/getAUser")
-  .get(protectedRoute, restrictedRoute("admin"), getAUser);
+  .get(protectedRoute, restrictedRoute(["admin"]), getAUser);
 
 router
   .route("/getAllUser")
-  .get(protectedRoute, restrictedRoute("admin"), getAllUser);
+  .get(protectedRoute, restrictedRoute(["admin"]), getAllUser);
 
 router
   .route("/deleteAUser")
-  .patch(protectedRoute, restrictedRoute("admin"), deleteAUser);
+  .patch(protectedRoute, restrictedRoute(["admin"]), deleteAUser);
 
 router
   .route("/updateAUser")
-  .patch(protectedRoute, restrictedRoute("admin"), updateUser);
+  .patch(protectedRoute, restrictedRoute(["admin"]), updateUser);
 
 export default router;

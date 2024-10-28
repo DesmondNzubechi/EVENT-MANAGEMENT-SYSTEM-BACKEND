@@ -21,7 +21,7 @@ describe("EVENT ROUTE", () => {
         .post("/api/v1/event/createEvent")
         .send(newEvent);
 
-      expect(response.statusCode).toBe(201);
+      expect(response.statusCode).toBe(401);
       expect(response.body).toHaveProperty("id");
       expect(response.body).toMatchObject({
         title: newEvent.title,

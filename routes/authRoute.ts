@@ -5,9 +5,11 @@ import {
   forgottPassword,
   loginUser,
   logoutUser,
+  makeUserAdmin,
   protectedRoute,
   registerUser,
   resetPassword,
+  restrictedRoute,
   updateMe,
   verifyUserEmail,
 } from "../controllers/authController";
@@ -27,10 +29,12 @@ router.route("/changePassword").patch(changeUserPassword);
 
 router.route("/forgotPassword").post(forgottPassword);
 
+router.route("/makeUserAdmin/:id").patch(protectedRoute, restrictedRoute(["super-admin"]), makeUserAdmin);
+
 router.route("/resetPassword/:token").patch(resetPassword);
 
 router.route("/verifyEmail").patch(verifyUserEmail);
 
 router.route("/logout").post(logoutUser);
 
-export default router;
+export default router; 

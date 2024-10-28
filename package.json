@@ -4,7 +4,7 @@
   "description": "this is the backend code for an event management website",
   "main": "nodemon Server.ts",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "build": "npx tsc",
     "start": "Server.ts",
     "dev": "nodemon Server.ts"

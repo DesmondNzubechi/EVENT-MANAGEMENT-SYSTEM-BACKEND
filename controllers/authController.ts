@@ -205,7 +205,7 @@ export const protectedRoute = catchAsync(async (req, res, next) => {
   next();
 });
 
-export const restrictedRoute = (...role: string[]) => {
+export const restrictedRoute = (role: string[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.jwt;
 
@@ -240,15 +240,15 @@ export const updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  const { email, fullName } = req.body;
+  const { newEmail, newFullName } = req.body;
 
-  if (!email || !fullName) {
+  if (!newEmail || !newFullName) {
     return next(new AppError("Kindly provide the required field", 400));
   }
 
   const updateUser = await User.findByIdAndUpdate(
     user.id,
-    { email, fullName },
+    { newEmail, newFullName },
     {
       runValidators: true,
       new: true,
@@ -261,13 +261,13 @@ export const updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  res.status(200).json({
-    status: "success",
-    message: "User information successfully updated",
-    data: {
-      user: updateUser,
-    },
-  });
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "User information successfully updated.",
+    updateUser
+  );
 });
 
 export const changeUserPassword = catchAsync(async (req, res, next) => {
@@ -320,6 +320,34 @@ export const changeUserPassword = catchAsync(async (req, res, next) => {
   createAndSendTokenToUser(user, 200, "password change successful.", res);
 });
 
+export const makeUserAdmin = catchAsync(async (req, res, next) => {
+  
+  const { id } = req.params;
+
+  if (!id) {
+    return next(new AppError("Kindly provide the user id", 400))
+  }
+
+  const user = await User.findByIdAndUpdate(id, { role: "super-admin" }, {
+    new: true,
+    runValidators: true
+  })
+  if (!user) {
+  return next(new AppError("Something went wrong. Please try again", 400))
+}
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "User successfully upgraded to admin.",
+    user
+  );
+
+})
+
+
+
+
 export const forgottPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
 
@@ -360,6 +388,8 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
     );
   }
 });
+
+
 
 export const resetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
@@ -406,6 +436,9 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   );
 });
 
+
+
+
 export const sendVerificationCode = catchAsync(async (req, res, next) => {
   const { userId } = req.params;
 
@@ -446,6 +479,8 @@ export const sendVerificationCode = catchAsync(async (req, res, next) => {
     null
   );
 });
+
+
 
 export const verifyUserEmail = catchAsync(async (req, res, next) => {
   const { verificationCode } = req.body;
@@ -509,6 +544,9 @@ export const verifyUserEmail = catchAsync(async (req, res, next) => {
     null
   );
 });
+
+
+
 
 export const logoutUser = catchAsync(async (req, res, next) => {
   const CookieOptions = {
