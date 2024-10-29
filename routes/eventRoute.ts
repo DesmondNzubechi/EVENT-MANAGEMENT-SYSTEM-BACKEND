@@ -14,10 +14,10 @@ import { uploadImageToMemory } from "../controllers/uploadEventImage";
 const router = express.Router();
 
 router
-  .route("/createEvent")
+  .route("/createEvent") 
   .post(
-    protectedRoute,
-    restrictedRoute(["admin"]),
+    // protectedRoute,
+    // restrictedRoute(["admin", "super-admin"]),
     uploadImageToMemory,
     createEvent
   );
@@ -28,7 +28,11 @@ router
 
 router
   .route("/getAllEvent")
-  .get(protectedRoute, restrictedRoute(["admin"]), getAllEvent);
+  .get(
+    // protectedRoute,
+    // restrictedRoute(["admin", "super-admin"]),
+    getAllEvent
+  );
 
 router
   .route("/getAllPublishedEvent")

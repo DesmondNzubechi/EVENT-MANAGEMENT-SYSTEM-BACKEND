@@ -60,7 +60,7 @@ export const registerUser = catchAsync(
     const { fullName, email, password, confirmPassword } = req.body;
 
     const userExist = await User.findOne({ email: email });
-
+ 
     if (userExist) {
       return next(
         new AppError(
@@ -88,7 +88,9 @@ export const registerUser = catchAsync(
     user.emailVerificationCode = verificationCode;
     user.emailVerificationCodeExpires = Date.now() + 30 * 60 * 1000;
 
-    await user.save();
+    await user.save({
+      validateBeforeSave: false ,
+    });
 
     sendEmail({
       name: user.fullName,
@@ -271,6 +273,7 @@ export const updateMe = catchAsync(async (req, res, next) => {
 });
 
 export const changeUserPassword = catchAsync(async (req, res, next) => {
+
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
   if (!currentPassword || !newPassword || !confirmNewPassword) {
@@ -321,20 +324,23 @@ export const changeUserPassword = catchAsync(async (req, res, next) => {
 });
 
 export const makeUserAdmin = catchAsync(async (req, res, next) => {
-  
   const { id } = req.params;
 
   if (!id) {
-    return next(new AppError("Kindly provide the user id", 400))
+    return next(new AppError("Kindly provide the user id", 400));
   }
 
-  const user = await User.findByIdAndUpdate(id, { role: "super-admin" }, {
-    new: true,
-    runValidators: true
-  })
+  const user = await User.findByIdAndUpdate(
+    id,
+    { role: "super-admin" },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
   if (!user) {
-  return next(new AppError("Something went wrong. Please try again", 400))
-}
+    return next(new AppError("Something went wrong. Please try again", 400));
+  }
   return AppResponse(
     res,
     200,
@@ -342,11 +348,7 @@ export const makeUserAdmin = catchAsync(async (req, res, next) => {
     "User successfully upgraded to admin.",
     user
   );
-
-})
-
-
-
+});
 
 export const forgottPassword = catchAsync(async (req, res, next) => {
   const { email } = req.body;
@@ -388,8 +390,6 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
     );
   }
 });
-
-
 
 export const resetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
@@ -436,9 +436,6 @@ export const resetPassword = catchAsync(async (req, res, next) => {
   );
 });
 
-
-
-
 export const sendVerificationCode = catchAsync(async (req, res, next) => {
   const { userId } = req.params;
 
@@ -479,8 +476,6 @@ export const sendVerificationCode = catchAsync(async (req, res, next) => {
     null
   );
 });
-
-
 
 export const verifyUserEmail = catchAsync(async (req, res, next) => {
   const { verificationCode } = req.body;
@@ -544,9 +539,6 @@ export const verifyUserEmail = catchAsync(async (req, res, next) => {
     null
   );
 });
-
-
-
 
 export const logoutUser = catchAsync(async (req, res, next) => {
   const CookieOptions = {

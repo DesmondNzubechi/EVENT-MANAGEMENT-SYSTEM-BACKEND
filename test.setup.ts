@@ -12,12 +12,9 @@ if (!DATABASE_URL) {
 
 beforeAll(async () => {
   await mongoose.connect(DATABASE_URL);
-});
+}, 20000);
 
-beforeEach(async () => {
-  await mongoose.connection.db?.dropDatabase();
-});
 
 afterAll(async () => {
   await mongoose.connection.close();
-});
+}, 20000); 

@@ -13,7 +13,6 @@ import {
   updateMe,
   verifyUserEmail,
 } from "../controllers/authController";
-import { buyEventTicket } from "../controllers/paymentController";
 
 const router = express.Router();
 
