@@ -130,7 +130,7 @@ export const loginUser = catchAsync(
 
       user.emailVerificationCode = verificationCode;
       user.emailVerificationCodeExpires = Date.now() + 30 * 60 * 1000;
-
+ 
       await user.save({ validateBeforeSave: false });
 
       sendEmail({
