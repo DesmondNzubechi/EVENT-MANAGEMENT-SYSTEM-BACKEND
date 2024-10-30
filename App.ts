@@ -5,9 +5,17 @@ import eventRoute from "../EVENT MANAGEMENT - BACKEND/routes/eventRoute";
 import bookingRoute from "../EVENT MANAGEMENT - BACKEND/routes/bookingRoute";
 import userRoute from '../EVENT MANAGEMENT - BACKEND/routes/userRoute'
 import cookieParser from "cookie-parser";
+import cors from 'cors';
 
 const app = express();
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:5000',
+  credentials: true, // Allow credentials (cookies)
+};
 
+// Use CORS middleware
+app.use(cors(corsOptions));
 app.use(cookieParser())
 
 app.use(express.json());

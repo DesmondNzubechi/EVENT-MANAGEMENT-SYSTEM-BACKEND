@@ -467,7 +467,7 @@ export const sendVerificationCode = catchAsync(async (req, res, next) => {
     link: ORIGIN_URL,
     linkName: "Visit our website",
   });
-
+ 
   return AppResponse(
     res,
     200,

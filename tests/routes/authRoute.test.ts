@@ -5,6 +5,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { configDotenv } from "dotenv";
 import { AppError } from "../../errors/appError";
+import { registeredUserData, userData } from "../../mockData/mockdata";
 
 configDotenv({ path: "./config.env" });
 
@@ -28,16 +29,9 @@ afterAll(async () => {
 
 describe("ATHENTICATION ROUTE", () => {
   test("SHOULD REGISTER NEW USER", async () => {
-    const user = {
-      fullName: "Desmond Abugu",
-      email: "abugu@gmail.com",
-      password: "123456789",
-      confirmPassword: "123456789",
-    };
-
     const response = await request(app)
       .post("/api/v1/auth/register")
-      .send(user);
+      .send(userData);
 
     expect(response.statusCode).toBe(201);
     expect(response.body).toMatchObject({
@@ -48,38 +42,78 @@ describe("ATHENTICATION ROUTE", () => {
   });
 
   test("SHOULD LOGIN REGISTERED USER", async () => {
-    const user = {
-      fullName: "Desmond Abugu",
-      email: "abugu@gmail.com",
-      password: "123456789",
-      confirmPassword: "123456789",
-    };
+    await request(app).post("/api/v1/auth/register").send(userData);
 
-    await request(app).post("/api/v1/auth/register").send(user);
+    const response = await request(app)
+      .post("/api/v1/auth/login")
+      .send(registeredUserData);
+    console.log("the response", response.body);
+    expect(response.statusCode).toBe(200);
+  });
 
-    const registeredUser = {
-      email: "abugu@gmail.com",
-      password: "123456789",
+  test("SHOULD NOT LOGIN UNREGISTERED USER", async () => {
+    const unRegisteredUser = {
+      email: "example@gmail.com",
+      password: "ahgdgew2",
     };
 
     const response = await request(app)
       .post("/api/v1/auth/login")
-      .send(registeredUser);
-    console.log("the response", response.body);
-    expect(response.statusCode).toBe(200);
+      .send(unRegisteredUser);
+
+    expect(response.statusCode).toBe(400);
   });
-    
-    
-    test("SHOULD NOT LOGIN UNREGISTERED USER", async () => {
+});
 
-        const unRegisteredUser = {
-            email: "example@gmail.com",
-            password : "ahgdgew2"
-        }
+describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
+  test("SHOULD LOGIN REGISTERED USER", async () => {
+    const registrationResponse = await request(app)
+      .post("/api/v1/auth/register")
+      .send(userData);
 
-        const response = await request(app).post("/api/v1/auth/login").send(unRegisteredUser);
+    expect(registrationResponse.statusCode).toBe(201);
+    expect(registrationResponse.body).toMatchObject({
+      status: "success",
+      message:
+        "user registration successful. Kindly verify your account using the code that was sent to the email you provided.",
+    });
 
-        expect(response.statusCode).toBe(400) 
- 
-    })
+    const theuser = await User.findOne({ email: userData.email });
+    expect(theuser).toBeTruthy();
+
+    const verificationCode = theuser?.emailVerificationCode;
+
+    expect(verificationCode).toBeTruthy();
+
+    const verificationResponse = await request(app)
+      .patch("/api/v1/auth/verifyEmail")
+      .send({
+        verificationCode: verificationCode,
+      });
+
+    expect(verificationResponse.statusCode).toBe(200);
+    expect(verificationResponse.body.message).toContain(
+      "You have successfully verified your email. Kindly Login again"
+    );
+    expect(verificationResponse.body.status).toContain("success");
+
+    const loginResponse = await request(app)
+      .post("/api/v1/auth/login")
+      .send(registeredUserData);
+
+    expect(loginResponse.statusCode).toBe(200);
+    expect(loginResponse.body.message).toBe("Login successful");
+    expect(loginResponse.headers["set-cookie"]).toBeDefined();
+
+    console.log("the login response don dey here", loginResponse.headers);
+
+    const fetchMeResponse = await request(app)
+      .get("/api/v1/auth/fetchMe")
+      .set("Cookie", loginResponse.headers["set-cookie"]);
+    console.log("fetch me response", fetchMeResponse.body);
+
+    expect(fetchMeResponse.statusCode).toBe(200);
+    expect(fetchMeResponse.body.message).toBe("user fetched successfully");
+    expect(fetchMeResponse.body.status).toBe("success");
+  });
 });
