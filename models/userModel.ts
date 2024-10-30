@@ -86,8 +86,8 @@ userSchema.methods.changePasswordAfter = function (
   return false;
 };
 
-userSchema.methods.createResetPasswordToken = async function () {
-  const resetToken = await crypto.randomBytes(32).toString("hex");
+userSchema.methods.createResetPasswordToken =  function () {
+  const resetToken =  crypto.randomBytes(32).toString("hex");
 
   this.passwordResetToken = crypto
     .createHash("sha256")

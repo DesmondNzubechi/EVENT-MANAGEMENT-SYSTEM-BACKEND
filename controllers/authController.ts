@@ -167,7 +167,7 @@ export const fetchMe = catchAsync(async (req, res, next) => {
       new AppError("You are not authorised to access this route", 401)
     );
   }
-
+ 
   const user = await verifyTokenAndGetUser(token, next);
 
   if (!user) {
@@ -221,6 +221,7 @@ export const restrictedRoute = (role: string[]) => {
     next();
   });
 };
+
 
 export const updateMe = catchAsync(async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -389,19 +390,19 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
       )
     );
   }
-});
+}); 
 
 export const resetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
 
-  const decodedToken = await crypto
+  const decodedToken = crypto
     .createHash("sha256")
     .update(token)
     .digest("hex");
 
   const user = await User.findOne({
     passwordResetToken: decodedToken,
-    passwordresetTokenExpires: { $gt: Date.now() },
+    passwordResetTokenExpires: { $gt: Date.now() },
   });
 
   if (!user) {
