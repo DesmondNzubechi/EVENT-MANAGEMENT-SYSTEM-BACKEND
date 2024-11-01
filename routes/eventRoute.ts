@@ -16,8 +16,8 @@ const router = express.Router();
 router
   .route("/createEvent") 
   .post(
-    // protectedRoute,
-    // restrictedRoute(["admin", "super-admin"]),
+    protectedRoute,
+    restrictedRoute(["admin", "super-admin"]),
     uploadImageToMemory,
     createEvent
   );

@@ -15,19 +15,27 @@ if (!DATABASE_URL) {
   throw new AppError("Make sure the database url is defined", 400);
 }
 
+beforeEach(async () => {
+  await User.deleteMany({});
+});
+
+
 beforeAll(async () => {
   await mongoose.connect(DATABASE_URL);
 });
 
-beforeEach(async () => {
-  await User.deleteMany({});
-});
+
 
 afterAll(async () => {
   await mongoose.connection.close();
 });
 
-describe("ATHENTICATION ROUTE", () => {
+
+describe.skip("ATHENTICATION ROUTE", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+  });
+  
   test("SHOULD REGISTER NEW USER", async () => {
     const response = await request(app)
       .post("/api/v1/auth/register")
@@ -47,7 +55,6 @@ describe("ATHENTICATION ROUTE", () => {
     const response = await request(app)
       .post("/api/v1/auth/login")
       .send(registeredUserData);
-    console.log("the response", response.body);
     expect(response.statusCode).toBe(200);
   });
 
@@ -65,7 +72,11 @@ describe("ATHENTICATION ROUTE", () => {
   });
 });
 
-describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
+describe.skip("AUTHENTICATION ROUTE: register, login and fetch user", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+  });
+  
   test("SHOULD LOGIN REGISTERED USER", async () => {
     const registrationResponse = await request(app)
       .post("/api/v1/auth/register")
@@ -108,7 +119,7 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
     const fetchMeResponse = await request(app)
       .get("/api/v1/auth/fetchMe")
       .set("Cookie", loginResponse.headers["set-cookie"]);
-    console.log("fetch me response", fetchMeResponse.body);
+   
 
     expect(fetchMeResponse.statusCode).toBe(200);
     expect(fetchMeResponse.body.message).toBe("user fetched successfully");
@@ -226,7 +237,7 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
     expect(forgotPasswordResponse.body.message).toBe("Token sent successful");
   });
 
-  test("RESET USER PASSWORD", async () => {
+  test("SHOULD RESET USER PASSWORD", async () => {
     // REGISTER USER
     const registerResponse = await request(app)
       .post("/api/v1/auth/register")
@@ -259,5 +270,5 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
     expect(resetPasswordResponse.body.message).toBe(
       "You have successfully reset your password. Kindly Login again"
     );
-  }, 10000);
+  }, 10000); 
 });

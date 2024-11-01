@@ -25,7 +25,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log("hello from this middleware");
+ // console.log("hello from this middleware");
   next();
 });
 

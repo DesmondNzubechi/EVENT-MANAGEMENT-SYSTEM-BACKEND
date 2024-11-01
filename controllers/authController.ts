@@ -65,7 +65,7 @@ export const registerUser = catchAsync(
       return next(
         new AppError(
           "User already exist with this email. If you are the one kindly login.",
-          400
+          700
         )
       );
     }

@@ -2,7 +2,7 @@ import cloudinary from "../cloudinary/cloudinary";
 import { UploadApiResponse } from "cloudinary";
 
 export const uploadFileToCloudinary = async (
-  pdfBuffer: Buffer,
+  fileBuffer: Buffer,
   folder: string,
   type: string | any,
   format: string
@@ -23,11 +23,11 @@ export const uploadFileToCloudinary = async (
         }
       );
 
-      stream.end(pdfBuffer);
+      stream.end(fileBuffer);
     });
 
     return result;
   } catch (error) {
-    throw new Error("Failed to upload PDF to Cloudinary");
+    throw new Error("Failed to upload file to Cloudinary");
   }
 };
