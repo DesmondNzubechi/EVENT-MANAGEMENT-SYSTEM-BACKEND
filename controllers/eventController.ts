@@ -26,10 +26,15 @@ export const createEvent = catchAsync(async (req, res, next) => {
   }
 
   if (!req.file) {
-    return next(new AppError("Kindly upload an image for this event", 400))
+    return next(new AppError("Kindly upload an image for this event", 400));
   }
 
-  const imageUrl = await uploadFileToCloudinary(req.file.buffer, "images", "image", 'jpg')
+  const imageUrl = await uploadFileToCloudinary(
+    req.file.buffer,
+    "images",
+    "image",
+    "jpg"
+  );
 
   const event = await Events.create({
     title,
@@ -39,7 +44,7 @@ export const createEvent = catchAsync(async (req, res, next) => {
     date,
     totalTicket,
     availableTicket: totalTicket,
-    image : imageUrl.secure_url
+    image: imageUrl.secure_url,
   });
 
   if (!event) {
@@ -59,7 +64,7 @@ export const createEvent = catchAsync(async (req, res, next) => {
     },
   });
 });
- 
+
 //FETCH ALL CREATED EVENT
 export const getAllEvent = catchAsync(async (req, res, next) => {
   const events = await Events.find();
@@ -104,7 +109,6 @@ export const getAllPublishedEvents = catchAsync(async (req, res, next) => {
   );
 });
 
-
 export const getAllUnPublishedEvents = catchAsync(async (req, res, next) => {
   const events = await Events.find({ status: "unpublished" });
 
@@ -129,6 +133,15 @@ export const getAllUnPublishedEvents = catchAsync(async (req, res, next) => {
 // UPDATE AN EVENT POST
 export const updateEvent = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+
+  const eventExist = await Events.findById(id);
+
+  // Handle case when event is not found
+  if (!eventExist) {
+    return next(
+      new AppError("The event you are trying to access does not exist.", 404)
+    );
+  }
 
   // Update the event
   const event = await Events.findByIdAndUpdate(id, req.body, {
@@ -257,7 +270,7 @@ export const unPublishEvent = catchAsync(async (req, res, next) => {
     res,
     200,
     "success",
-    "Event successfully unpublish",
+    "Event successfully unpublished",
     event
   );
 });
