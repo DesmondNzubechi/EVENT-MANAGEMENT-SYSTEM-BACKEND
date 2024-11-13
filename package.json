@@ -43,6 +43,9 @@
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.7",
     "pdfkit": "^0.15.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui": "^5.18.2",
+    "swagger-ui-express": "^5.0.1",
     "validator": "^13.12.0"
   }
 }
