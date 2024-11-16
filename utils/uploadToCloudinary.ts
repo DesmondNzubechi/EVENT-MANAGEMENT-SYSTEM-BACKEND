@@ -14,7 +14,7 @@ export const uploadFileToCloudinary = async (
           resource_type: type, // Automatically detect file type
           folder: folder,
           public_id: `${folder}_${Date.now()}`,
-          format: format, // Ensures the file is saved as a PDF
+          format: format, 
         },
         (error, result) => {
           if (error) reject(error);

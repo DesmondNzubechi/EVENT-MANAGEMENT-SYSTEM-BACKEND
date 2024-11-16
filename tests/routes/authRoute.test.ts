@@ -31,11 +31,8 @@ afterAll(async () => {
 });
 
 
-describe.skip("ATHENTICATION ROUTE", () => {
-  beforeEach(async () => {
-    await User.deleteMany({});
-  });
-  
+describe("ATHENTICATION ROUTE", () => {
+
   test("SHOULD REGISTER NEW USER", async () => {
     const response = await request(app)
       .post("/api/v1/auth/register")
@@ -72,7 +69,7 @@ describe.skip("ATHENTICATION ROUTE", () => {
   });
 });
 
-describe.skip("AUTHENTICATION ROUTE: register, login and fetch user", () => {
+describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
   beforeEach(async () => {
     await User.deleteMany({});
   });
