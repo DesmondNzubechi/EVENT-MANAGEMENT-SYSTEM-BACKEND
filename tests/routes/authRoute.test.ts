@@ -226,7 +226,7 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
     //FORGOT PASSWORD
     const forgotPasswordResponse = await request(app)
       .post("/api/v1/auth/forgotPassword")
-      .send({
+      .send({ 
         email: registeredUserData.email,
       });
 

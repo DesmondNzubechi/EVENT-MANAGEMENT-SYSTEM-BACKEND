@@ -6,7 +6,9 @@ import bookingRoute from "../EVENT MANAGEMENT - BACKEND/routes/bookingRoute";
 import userRoute from '../EVENT MANAGEMENT - BACKEND/routes/userRoute'
 import cookieParser from "cookie-parser";
 import cors from 'cors';
-
+import swaggerJsDoc from 'swagger-jsdoc'
+import swaggerUi from "swagger-ui-express";
+import path from 'path'
 const app = express();
 // CORS configuration
 const corsOptions = {
@@ -24,8 +26,52 @@ app.get("/", (req: Request, res: Response) => {
   res.send("THIS API IS WORKING AS EXPECTED");
 });
 
+
+export const swaggerOptions = { 
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'EVENT BOOKING PLATFORM API',
+      version: '1.0.0',
+      description: `
+      `,
+    },
+    servers: [
+      { 
+        url: process.env.backendUrl 
+      },
+    ], 
+    components: {
+      schemas: {
+        Auth: {},
+        Event: {},
+        Booking: {},
+        User: {}
+      },
+    },
+  },
+  apis: ['./routes/*.js'], // Path to your route files
+};
+
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use(
+  '/api-docs', 
+  express.static('node_modules/swagger-ui-dist/', {index: false}),
+  swaggerUi.serve, 
+  swaggerUi.setup(swaggerDocs)
+);
+
+// Serve the Swagger UI static assets (CSS, JS, etc.)
+app.use('/api-docs', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist')));
+app.use('/api-docs/swagger-ui.css', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui.css')));
+app.use('/api-docs/swagger-ui-bundle.js', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-bundle.js')));
+app.use('/api-docs/swagger-ui-standalone-preset.js', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js')));
+app.use('/api-docs/swagger-ui-init.js', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-init.js')));
+
+
 app.use((req: Request, res: Response, next: NextFunction) => {
- // console.log("hello from this middleware");
+ console.log("hello from this middleware");
   next();
 });
 
