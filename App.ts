@@ -1,9 +1,9 @@
 import express, { Response, Request, NextFunction } from "express";
 import globalErrorHandler from "./errors/errorController";
-import authRoute from "../EVENT MANAGEMENT - BACKEND/routes/authRoute";
-import eventRoute from "../EVENT MANAGEMENT - BACKEND/routes/eventRoute";
-import bookingRoute from "../EVENT MANAGEMENT - BACKEND/routes/bookingRoute";
-import userRoute from '../EVENT MANAGEMENT - BACKEND/routes/userRoute'
+import authRoute from "../EVENT-MANAGEMENT-BACKEND/routes/authRoute";
+import eventRoute from "../EVENT-MANAGEMENT-BACKEND/routes/eventRoute";
+import bookingRoute from "../EVENT-MANAGEMENT-BACKEND/routes/bookingRoute";
+import userRoute from '../EVENT-MANAGEMENT-BACKEND/routes/userRoute'
 import cookieParser from "cookie-parser";
 import cors from 'cors';
 import swaggerJsDoc from 'swagger-jsdoc'
