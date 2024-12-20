@@ -1,8 +1,8 @@
 import express, { Response, Request, NextFunction } from "express";
 import globalErrorHandler from "./src/errors/errorController";
-import authRoute from "../EVENT-MANAGEMENT-BACKEND/dist/routes/authRoute";
+import authRoute from "./dist/routes/authRoute";
 import eventRoute from "./src/routes/eventRoute";
-import bookingRoute from "../EVENT-MANAGEMENT-BACKEND/dist/routes/bookingRoute";
+import bookingRoute from "./dist/routes/bookingRoute";
 import userRoute from "./src/routes/userRoute";
 import cookieParser from "cookie-parser";
 import cors from "cors";
