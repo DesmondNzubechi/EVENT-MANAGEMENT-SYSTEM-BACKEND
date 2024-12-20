@@ -1,15 +1,15 @@
 import app from "../../App";
 import { configDotenv } from "dotenv";
-import { AppError } from "../../src/errors/appError";
+import { AppError } from "../../errors/appError";
 import mongoose from "mongoose";
-import User from "../../src/models/userModel";
+import User from "../../models/userModel";
 import { it } from "@jest/globals";
 import request from "supertest";
 import {
   eventData,
   registeredUserData,
   userData,
-} from "../../src/mockData/mockdata";
+} from "../../mockData/mockdata";
 
 configDotenv({ path: "./config.env" });
 

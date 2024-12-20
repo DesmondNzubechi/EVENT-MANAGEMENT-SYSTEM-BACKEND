@@ -1,9 +1,9 @@
 import express, { Response, Request, NextFunction } from "express";
-import globalErrorHandler from "./src/errors/errorController";
-import authRoute from "./dist/routes/authRoute";
-import eventRoute from "./src/routes/eventRoute";
-import bookingRoute from "./dist/routes/bookingRoute";
-import userRoute from "./src/routes/userRoute";
+import globalErrorHandler from "./errors/errorController";
+import authRoute from "./routes/authRoute";
+import eventRoute from "./routes/eventRoute";
+import bookingRoute from "./routes/bookingRoute";
+import userRoute from "./routes/userRoute";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import swaggerJsDoc from "swagger-jsdoc";
@@ -110,7 +110,3 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 app.use(globalErrorHandler);
 
 export default app;
-
-
-
-

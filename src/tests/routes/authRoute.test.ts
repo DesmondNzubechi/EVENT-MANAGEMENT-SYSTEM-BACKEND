@@ -1,11 +1,11 @@
 import app from "../../App";
-import User from "../../src/models/userModel";
+import User from "../../models/userModel";
 import { test } from "@jest/globals";
 import request from "supertest";
 import mongoose from "mongoose";
 import { configDotenv } from "dotenv";
-import { AppError } from "../../src/errors/appError";
-import { registeredUserData, userData } from "../../src/mockData/mockdata";
+import { AppError } from "../../errors/appError";
+import { registeredUserData, userData } from "../../mockData/mockdata";
 
 configDotenv({ path: "./config.env" });
 

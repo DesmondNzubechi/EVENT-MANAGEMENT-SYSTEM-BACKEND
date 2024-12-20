@@ -34,7 +34,10 @@
 // export default router;
 
 import express from "express";
-import { protectedRoute, restrictedRoute } from "../controllers/authController";
+import {
+  protectedRoute,
+  restrictedRoute,
+} from "../controllers/authController";
 import {
   createAUser,
   deleteAUser,

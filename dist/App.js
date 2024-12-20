@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.swaggerOptions = void 0;
 const express_1 = __importDefault(require("express"));
 const errorController_1 = __importDefault(require("./errors/errorController"));
-const authRoute_1 = __importDefault(require("../EVENT-MANAGEMENT-BACKEND/dist/routes/authRoute"));
-const eventRoute_1 = __importDefault(require("../EVENT-MANAGEMENT-BACKEND/routes/eventRoute"));
-const bookingRoute_1 = __importDefault(require("../EVENT-MANAGEMENT-BACKEND/dist/routes/bookingRoute"));
-const userRoute_1 = __importDefault(require("../EVENT-MANAGEMENT-BACKEND/routes/userRoute"));
+const authRoute_1 = __importDefault(require("./routes/authRoute"));
+const eventRoute_1 = __importDefault(require("./routes/eventRoute"));
+const bookingRoute_1 = __importDefault(require("./routes/bookingRoute"));
+const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
@@ -18,7 +18,7 @@ const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 // CORS configuration
 const corsOptions = {
-    origin: 'http://localhost:5000',
+    origin: "http://localhost:5000",
     credentials: true, // Allow credentials (cookies)
 };
 // Use CORS middleware
@@ -30,16 +30,16 @@ app.get("/", (req, res) => {
 });
 exports.swaggerOptions = {
     swaggerDefinition: {
-        openapi: '3.0.0',
+        openapi: "3.0.0",
         info: {
-            title: 'EVENT BOOKING PLATFORM API',
-            version: '1.0.0',
+            title: "EVENT BOOKING PLATFORM API",
+            version: "1.0.0",
             description: `
       `,
         },
         servers: [
             {
-                url: process.env.backendUrl
+                url: process.env.backendUrl,
             },
         ],
         components: {
@@ -47,20 +47,20 @@ exports.swaggerOptions = {
                 Auth: {},
                 Event: {},
                 Booking: {},
-                User: {}
+                User: {},
             },
         },
     },
-    apis: ['./routes/*.js'], // Path to your route files
+    apis: ["./routes/*.js"], // Path to your route files
 };
 const swaggerDocs = (0, swagger_jsdoc_1.default)(exports.swaggerOptions);
-app.use('/api-docs', express_1.default.static('node_modules/swagger-ui-dist/', { index: false }), swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocs));
+app.use("/api-docs", express_1.default.static("node_modules/swagger-ui-dist/", { index: false }), swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocs));
 // Serve the Swagger UI static assets (CSS, JS, etc.)
-app.use('/api-docs', express_1.default.static(path_1.default.join(__dirname, 'node_modules/swagger-ui-dist')));
-app.use('/api-docs/swagger-ui.css', express_1.default.static(path_1.default.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui.css')));
-app.use('/api-docs/swagger-ui-bundle.js', express_1.default.static(path_1.default.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-bundle.js')));
-app.use('/api-docs/swagger-ui-standalone-preset.js', express_1.default.static(path_1.default.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js')));
-app.use('/api-docs/swagger-ui-init.js', express_1.default.static(path_1.default.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-init.js')));
+app.use("/api-docs", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist")));
+app.use("/api-docs/swagger-ui.css", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui.css")));
+app.use("/api-docs/swagger-ui-bundle.js", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui-bundle.js")));
+app.use("/api-docs/swagger-ui-standalone-preset.js", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js")));
+app.use("/api-docs/swagger-ui-init.js", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui-init.js")));
 app.use((req, res, next) => {
     console.log("hello from this middleware");
     next();
