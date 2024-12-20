@@ -1,24 +1,24 @@
 import express, { Response, Request, NextFunction } from "express";
-import globalErrorHandler from "./errors/errorController";
-import authRoute from "../EVENT-MANAGEMENT-BACKEND/routes/authRoute";
-import eventRoute from "../EVENT-MANAGEMENT-BACKEND/routes/eventRoute";
-import bookingRoute from "../EVENT-MANAGEMENT-BACKEND/routes/bookingRoute";
-import userRoute from '../EVENT-MANAGEMENT-BACKEND/routes/userRoute'
+import globalErrorHandler from "./src/errors/errorController";
+import authRoute from "../EVENT-MANAGEMENT-BACKEND/dist/routes/authRoute";
+import eventRoute from "./src/routes/eventRoute";
+import bookingRoute from "../EVENT-MANAGEMENT-BACKEND/dist/routes/bookingRoute";
+import userRoute from "./src/routes/userRoute";
 import cookieParser from "cookie-parser";
-import cors from 'cors';
-import swaggerJsDoc from 'swagger-jsdoc'
+import cors from "cors";
+import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import path from 'path'
+import path from "path";
 const app = express();
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:5000',
+  origin: "http://localhost:5000",
   credentials: true, // Allow credentials (cookies)
 };
 
 // Use CORS middleware
 app.use(cors(corsOptions));
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use(express.json());
 
@@ -26,52 +26,75 @@ app.get("/", (req: Request, res: Response) => {
   res.send("THIS API IS WORKING AS EXPECTED");
 });
 
-
-export const swaggerOptions = { 
+export const swaggerOptions = {
   swaggerDefinition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'EVENT BOOKING PLATFORM API',
-      version: '1.0.0',
+      title: "EVENT BOOKING PLATFORM API",
+      version: "1.0.0",
       description: `
       `,
     },
     servers: [
-      { 
-        url: process.env.backendUrl 
+      {
+        url: process.env.backendUrl,
       },
-    ], 
+    ],
     components: {
       schemas: {
         Auth: {},
         Event: {},
         Booking: {},
-        User: {}
+        User: {},
       },
     },
   },
-  apis: ['./routes/*.js'], // Path to your route files
+  apis: ["./routes/*.js"], // Path to your route files
 };
-
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use(
-  '/api-docs', 
-  express.static('node_modules/swagger-ui-dist/', {index: false}),
-  swaggerUi.serve, 
+  "/api-docs",
+  express.static("node_modules/swagger-ui-dist/", { index: false }),
+  swaggerUi.serve,
   swaggerUi.setup(swaggerDocs)
 );
 
 // Serve the Swagger UI static assets (CSS, JS, etc.)
-app.use('/api-docs', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist')));
-app.use('/api-docs/swagger-ui.css', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui.css')));
-app.use('/api-docs/swagger-ui-bundle.js', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-bundle.js')));
-app.use('/api-docs/swagger-ui-standalone-preset.js', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js')));
-app.use('/api-docs/swagger-ui-init.js', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist/swagger-ui-init.js')));
-
+app.use(
+  "/api-docs",
+  express.static(path.join(__dirname, "node_modules/swagger-ui-dist"))
+);
+app.use(
+  "/api-docs/swagger-ui.css",
+  express.static(
+    path.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui.css")
+  )
+);
+app.use(
+  "/api-docs/swagger-ui-bundle.js",
+  express.static(
+    path.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui-bundle.js")
+  )
+);
+app.use(
+  "/api-docs/swagger-ui-standalone-preset.js",
+  express.static(
+    path.join(
+      __dirname,
+      "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
+    )
+  )
+);
+app.use(
+  "/api-docs/swagger-ui-init.js",
+  express.static(
+    path.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui-init.js")
+  )
+);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
- console.log("hello from this middleware");
+  console.log("hello from this middleware");
   next();
 });
 
@@ -85,5 +108,9 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(globalErrorHandler);
- 
+
 export default app;
+
+
+
+

@@ -5,9 +5,11 @@
   "main": "nodemon Server.ts",
   "scripts": {
     "test": "jest",
-    "build": "npx tsc",
+    "build": "npm run clean && npx tsc",
     "start": "Server.ts",
-    "dev": "nodemon Server.ts"
+    "dev": "nodemon Server.ts",
+    "clean": "rm -rf dist"
+
   },
   "author": "desmond nzubechukwu",
   "license": "ISC",

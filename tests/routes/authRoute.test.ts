@@ -1,11 +1,11 @@
 import app from "../../App";
-import User from "../../models/userModel";
+import User from "../../src/models/userModel";
 import { test } from "@jest/globals";
 import request from "supertest";
 import mongoose from "mongoose";
 import { configDotenv } from "dotenv";
-import { AppError } from "../../errors/appError";
-import { registeredUserData, userData } from "../../mockData/mockdata";
+import { AppError } from "../../src/errors/appError";
+import { registeredUserData, userData } from "../../src/mockData/mockdata";
 
 configDotenv({ path: "./config.env" });
 
@@ -19,20 +19,15 @@ beforeEach(async () => {
   await User.deleteMany({});
 });
 
-
 beforeAll(async () => {
   await mongoose.connect(DATABASE_URL);
 });
-
-
 
 afterAll(async () => {
   await mongoose.connection.close();
 });
 
-
 describe("ATHENTICATION ROUTE", () => {
-
   test("SHOULD REGISTER NEW USER", async () => {
     const response = await request(app)
       .post("/api/v1/auth/register")
@@ -73,7 +68,7 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
   beforeEach(async () => {
     await User.deleteMany({});
   });
-  
+
   test("SHOULD LOGIN REGISTERED USER", async () => {
     const registrationResponse = await request(app)
       .post("/api/v1/auth/register")
@@ -116,7 +111,6 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
     const fetchMeResponse = await request(app)
       .get("/api/v1/auth/fetchMe")
       .set("Cookie", loginResponse.headers["set-cookie"]);
-   
 
     expect(fetchMeResponse.statusCode).toBe(200);
     expect(fetchMeResponse.body.message).toBe("user fetched successfully");
@@ -226,7 +220,7 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
     //FORGOT PASSWORD
     const forgotPasswordResponse = await request(app)
       .post("/api/v1/auth/forgotPassword")
-      .send({ 
+      .send({
         email: registeredUserData.email,
       });
 
@@ -267,5 +261,5 @@ describe("AUTHENTICATION ROUTE: register, login and fetch user", () => {
     expect(resetPasswordResponse.body.message).toBe(
       "You have successfully reset your password. Kindly Login again"
     );
-  }, 10000); 
+  }, 10000);
 });
