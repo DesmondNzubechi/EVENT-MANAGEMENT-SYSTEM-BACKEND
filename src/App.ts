@@ -12,7 +12,7 @@ import path from "path";
 const app = express();
 // CORS configuration
 const corsOptions = {
-  origin: "http://localhost:5000",
+  origin: "http://localhost:3000",
   credentials: true, // Allow credentials (cookies)
 };
 

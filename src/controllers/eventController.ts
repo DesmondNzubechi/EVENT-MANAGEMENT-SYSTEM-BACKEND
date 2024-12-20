@@ -8,7 +8,7 @@ import { configDotenv } from "dotenv";
 import { sendEventEmail } from "../utils/sendEventEmail";
 import { AppResponse } from "../utils/appResponse";
 import { uploadFileToCloudinary } from "../utils/uploadToCloudinary";
-
+ 
 configDotenv({ path: "./config.env" });
 
 const { ORIGIN_URL } = process.env;

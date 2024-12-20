@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest",
     "build": "npm run clean && npx tsc",
-    "start": "Server.ts",
-    "dev": "nodemon Server.ts",
+    "start": "src/Server.ts",
+    "dev": "nodemon src/Server.ts",
     "clean": "rm -rf dist"
 
   },
