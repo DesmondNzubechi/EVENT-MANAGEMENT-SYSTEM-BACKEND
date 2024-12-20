@@ -44,29 +44,32 @@ const eventSchema = new Schema({
     },
     totalTicket: {
         type: Number,
-        required: [true, "Kindly provide slot available for this event."]
+        required: [true, "Kindly provide slot available for this event."],
     },
     availableTicket: {
         type: Number,
-        required: [true, "Kindly provide the quantity of ticket available for this event."],
-        default: 0
+        required: [
+            true,
+            "Kindly provide the quantity of ticket available for this event.",
+        ],
+        default: 0,
     },
     bookedTicket: {
         type: Number,
         required: [true, "Kindly provide slot available for this event."],
-        default: 0
+        default: 0,
     },
     bookieEmail: {
         type: [String],
-        default: []
+        default: [],
     },
     image: {
         type: String,
-        required: [true, "Kindly provide an image for this event"]
+        required: [true, "Kindly provide an image for this event"],
     },
     bookieId: {
         type: [Schema.ObjectId],
-        default: []
-    }
+        default: [],
+    },
 });
 exports.Events = model("Events", eventSchema);

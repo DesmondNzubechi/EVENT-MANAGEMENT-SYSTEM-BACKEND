@@ -18,7 +18,11 @@ const appError_1 = require("../errors/appError");
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.configDotenv)({ path: "./config.env" });
 const { EMAIL_HOST, EMAIL_PORT, EMAIL_PASSWORD, EMAIL_USERNAME, EMAIL_FROM } = process.env;
-if (!EMAIL_HOST || !EMAIL_PORT || !EMAIL_PASSWORD || !EMAIL_USERNAME || !EMAIL_FROM) {
+if (!EMAIL_HOST ||
+    !EMAIL_PORT ||
+    !EMAIL_PASSWORD ||
+    !EMAIL_USERNAME ||
+    !EMAIL_FROM) {
     throw new appError_1.AppError("Please make sure that these environmental variables exist", 400);
 }
 const sendEventEmail = (options) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,8 +33,8 @@ const sendEventEmail = (options) => __awaiter(void 0, void 0, void 0, function* 
             secure: true,
             auth: {
                 user: EMAIL_USERNAME,
-                pass: EMAIL_PASSWORD
-            }
+                pass: EMAIL_PASSWORD,
+            },
         });
         const emailTemplate = `
         <html>
@@ -155,7 +159,7 @@ const sendEventEmail = (options) => __awaiter(void 0, void 0, void 0, function* 
             from: EMAIL_FROM,
             subject: options.subject,
             name: options.name,
-            html: emailTemplate
+            html: emailTemplate,
         };
         yield transporter.sendMail(mailOptions);
         console.log("successful");

@@ -18,7 +18,11 @@ const appError_1 = require("../errors/appError");
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.configDotenv)({ path: "./config.env" });
 const { EMAIL_HOST, EMAIL_PORT, EMAIL_PASSWORD, EMAIL_USERNAME, EMAIL_FROM } = process.env;
-if (!EMAIL_HOST || !EMAIL_PORT || !EMAIL_PASSWORD || !EMAIL_USERNAME || !EMAIL_FROM) {
+if (!EMAIL_HOST ||
+    !EMAIL_PORT ||
+    !EMAIL_PASSWORD ||
+    !EMAIL_USERNAME ||
+    !EMAIL_FROM) {
     throw new appError_1.AppError("Please make sure that these environmental variables exist", 400);
 }
 const sendEventBookingEmail = (options) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,8 +33,8 @@ const sendEventBookingEmail = (options) => __awaiter(void 0, void 0, void 0, fun
             secure: true,
             auth: {
                 user: EMAIL_USERNAME,
-                pass: EMAIL_PASSWORD
-            }
+                pass: EMAIL_PASSWORD,
+            },
         });
         const emailTemplate = `
        
@@ -138,10 +142,12 @@ const sendEventBookingEmail = (options) => __awaiter(void 0, void 0, void 0, fun
             <th>Payment Status</th>
             <td>${options.paymentStatus}</td>
           </tr>
-         ${options.ticketNumber ? ` <tr>
+         ${options.ticketNumber
+            ? ` <tr>
             <th>Ticket No.</th>
             <td>${options.ticketNumber}</td>
-          </tr>` : ''}
+          </tr>`
+            : ""}
           <tr>
             <th>Time Booked</th>
             <td>${new Date().toLocaleString()}</td>
@@ -173,7 +179,7 @@ const sendEventBookingEmail = (options) => __awaiter(void 0, void 0, void 0, fun
             from: EMAIL_FROM,
             subject: options.subject,
             name: options.name,
-            html: emailTemplate
+            html: emailTemplate,
         };
         yield transporter.sendMail(mailOptions);
         console.log("successful");

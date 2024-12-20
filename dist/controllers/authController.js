@@ -247,10 +247,7 @@ exports.forgottPassword = (0, catchAsync_1.default)((req, res, next) => __awaite
 }));
 exports.resetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = req.params;
-    const decodedToken = crypto_1.default
-        .createHash("sha256")
-        .update(token)
-        .digest("hex");
+    const decodedToken = crypto_1.default.createHash("sha256").update(token).digest("hex");
     const user = yield userModel_1.default.findOne({
         passwordResetToken: decodedToken,
         passwordResetTokenExpires: { $gt: Date.now() },

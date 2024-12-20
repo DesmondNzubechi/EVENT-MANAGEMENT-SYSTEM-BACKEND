@@ -137,7 +137,9 @@ router
  *       200:
  *         description: List of published events
  */
-router.route("/getAllPublishedEvent").get(authController_1.protectedRoute, eventController_1.getAllPublishedEvents);
+router
+    .route("/getAllPublishedEvent")
+    .get(authController_1.protectedRoute, eventController_1.getAllPublishedEvents);
 /**
  * @swagger
  * /getAllUnpublishedEvent:
