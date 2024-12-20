@@ -14,10 +14,13 @@ const app = express();
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true, // Allow credentials (cookies)
+  methods: 'GET,POST,DELETE,PATCH',
+  allowedHeaders: 'Content-Type, Authorization, api_key',
 };
 
 // Use CORS middleware
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(cookieParser());
 
 app.use(express.json());
