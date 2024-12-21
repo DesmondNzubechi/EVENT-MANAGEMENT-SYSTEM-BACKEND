@@ -50,6 +50,7 @@ import {
   registerUser,
   resetPassword,
   restrictedRoute,
+  sendVerificationCode,
   updateMe,
   verifyUserEmail,
 } from "../controllers/authController";
@@ -209,5 +210,18 @@ router.route("/verifyEmail").patch(verifyUserEmail);
  *         description: User logged out successfully
  */
 router.route("/logout").post(logoutUser);
+
+
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Log out the user
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ */
+router.route("/sendVerificationCode").patch(sendVerificationCode);
 
 export default router;
