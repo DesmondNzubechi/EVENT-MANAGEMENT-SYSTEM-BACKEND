@@ -272,8 +272,8 @@ exports.resetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(
     return (0, appResponse_1.AppResponse)(res, 200, "success", "You have successfully reset your password. Kindly Login again", null);
 }));
 exports.sendVerificationCode = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    const user = yield userModel_1.default.findById(userId);
+    const { email } = req.body;
+    const user = yield userModel_1.default.findOne({ email });
     if (!user) {
         return next(new appError_1.AppError("User does not exist", 404));
     }

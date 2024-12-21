@@ -177,4 +177,15 @@ router.route("/verifyEmail").patch(authController_1.verifyUserEmail);
  *         description: User logged out successfully
  */
 router.route("/logout").post(authController_1.logoutUser);
+/**
+ * @swagger
+ * /logout:
+ *   post:
+ *     summary: Log out the user
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: User logged out successfully
+ */
+router.route("/sendVerificationCode").patch(authController_1.sendVerificationCode);
 exports.default = router;
