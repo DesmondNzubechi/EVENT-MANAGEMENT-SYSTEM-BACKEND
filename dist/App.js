@@ -18,11 +18,14 @@ const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 // CORS configuration
 const corsOptions = {
-    origin: "http://localhost:5000",
+    origin: "http://localhost:3000",
     credentials: true, // Allow credentials (cookies)
+    methods: 'GET,POST,DELETE,PATCH',
+    allowedHeaders: 'Content-Type, Authorization, api_key',
 };
 // Use CORS middleware
 app.use((0, cors_1.default)(corsOptions));
+app.options('*', (0, cors_1.default)(corsOptions));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 app.get("/", (req, res) => {
