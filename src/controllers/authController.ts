@@ -369,7 +369,7 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
   try {
     sendEmail({
       message,
-      subject: "RESET PASSWORD Link",
+      subject: "RESET PASSWORD LINK",
       email: user.email,
       name: user.fullName,
       link: resetUrl,

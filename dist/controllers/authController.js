@@ -230,7 +230,7 @@ exports.forgottPassword = (0, catchAsync_1.default)((req, res, next) => __awaite
     try {
         (0, sendEmail_1.sendEmail)({
             message,
-            subject: "RESET PASSWORD Link",
+            subject: "RESET PASSWORD LINK",
             email: user.email,
             name: user.fullName,
             link: resetUrl,

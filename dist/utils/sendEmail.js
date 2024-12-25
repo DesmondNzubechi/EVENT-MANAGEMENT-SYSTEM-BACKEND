@@ -140,7 +140,6 @@ const sendEmail = (options) => __awaiter(void 0, void 0, void 0, function* () {
               <div class="content">
                 <h2>Hello, ${options.name}!</h2>
                 <p>${options.message}</p>
-                <div class="code">Your verification code: <strong>${options.vCode}</strong></div>
         
                 <!-- Action Button -->
                 <a href="${options.link}" class="button">${options.linkName}</a>
