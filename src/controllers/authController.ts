@@ -362,7 +362,7 @@ export const forgottPassword = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  const resetUrl = `${ORIGIN_URL}/reset-password/${resetToken}`;
+  const resetUrl = `${ORIGIN_URL}/auth/reset-password/${resetToken}`;
 
   const message = `forgot your password? kindly reset your password by clicking the link below. If you did not request for this kindly ignore. This is only valid for 30 minutes.`;
 

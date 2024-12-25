@@ -225,7 +225,7 @@ exports.forgottPassword = (0, catchAsync_1.default)((req, res, next) => __awaite
     }
     const resetToken = user.createResetPasswordToken();
     yield user.save({ validateBeforeSave: false });
-    const resetUrl = `${ORIGIN_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${ORIGIN_URL}/auth/reset-password/${resetToken}`;
     const message = `forgot your password? kindly reset your password by clicking the link below. If you did not request for this kindly ignore. This is only valid for 30 minutes.`;
     try {
         (0, sendEmail_1.sendEmail)({
