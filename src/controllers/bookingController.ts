@@ -11,7 +11,7 @@ import { generateReceiptPdf } from "../utils/generateReceiptPdf";
 import { uploadFileToCloudinary } from "../utils/uploadToCloudinary";
 
 configDotenv({ path: "./config.env" });
-
+ 
 const { ORIGIN_URL, TEST_URL } = process.env;
 
 export const createEventBooking = catchAsync(async (req, res, next) => {
@@ -169,7 +169,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
         );
       } else {
         return next(
-          new AppError("Payment initiation failed. Please try again.", 500)
+          new AppError(`Payment initiation failed. Please try again. Here is why ${response.status}`, 500)
         );
       }
     });
