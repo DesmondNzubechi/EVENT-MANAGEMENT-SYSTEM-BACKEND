@@ -29,7 +29,7 @@ const { ORIGIN_URL, TEST_URL } = process.env;
 exports.createEventBooking = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.cookies.jwt;
     if (!token) {
-        return next(new appError_1.AppError("You are not authorized to perform this action. Please login", 400));
+        return next(new appError_1.AppError("You are not authorized to perform this action. Please login", 401));
     }
     const user = yield (0, verifyTokenAndGetUser_1.verifyTokenAndGetUser)(token, next);
     if (!user) {

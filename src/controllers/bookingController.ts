@@ -21,7 +21,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         "You are not authorized to perform this action. Please login",
-        400
+        401
       )
     );
   }
