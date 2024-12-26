@@ -126,7 +126,7 @@ router
  */
 router
     .route("/getAllEvent")
-    .get(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin", "super-admin"]), eventController_1.getAllEvent);
+    .get(/*protectedRoute, restrictedRoute(["admin", "super-admin"]), */ eventController_1.getAllEvent);
 /**
  * @swagger
  * /getAllPublishedEvent:

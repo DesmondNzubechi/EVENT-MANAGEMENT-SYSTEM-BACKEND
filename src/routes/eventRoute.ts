@@ -153,7 +153,7 @@ router
  */
 router
   .route("/getAllEvent")
-  .get(protectedRoute, restrictedRoute(["admin", "super-admin"]), getAllEvent);
+  .get(/*protectedRoute, restrictedRoute(["admin", "super-admin"]), */getAllEvent);
 
 /**
  * @swagger
