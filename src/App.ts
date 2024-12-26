@@ -52,7 +52,7 @@ export const swaggerOptions = {
       },
     },
   },
-  apis: ["./routes/*.js"], // Path to your route files
+  apis: ["./routes/*.ts"], // Path to your route files
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -62,7 +62,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocs)
 );
-
+ 
 // Serve the Swagger UI static assets (CSS, JS, etc.)
 app.use(
   "/api-docs",
