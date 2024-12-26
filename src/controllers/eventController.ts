@@ -198,7 +198,7 @@ export const getAnEvent = catchAsync(async (req, res, next) => {
 
   const theEvent = await Events.findById(id);
 
-  if (theEvent) {
+  if (!theEvent) {
     return next(
       new AppError(
         "An error occured while fetching this. Please try again",

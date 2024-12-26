@@ -126,7 +126,7 @@ exports.updateEvent = (0, catchAsync_1.default)((req, res, next) => __awaiter(vo
 exports.getAnEvent = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const theEvent = yield eventModel_1.Events.findById(id);
-    if (theEvent) {
+    if (!theEvent) {
         return next(new appError_1.AppError("An error occured while fetching this. Please try again", 400));
     }
     return (0, appResponse_1.AppResponse)(res, 200, "success", "event successfully fetched", theEvent);
