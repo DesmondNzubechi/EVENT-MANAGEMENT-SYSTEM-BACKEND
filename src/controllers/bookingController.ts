@@ -130,7 +130,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
     resPaystack.on("end", async () => {
       const response = JSON.parse(data);
 
-      // if (response.status) {
+       if (response.status) {
         // Payment initialization was successful
         const paymentReference = response.data.reference;
 
@@ -167,11 +167,11 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
             paymentUrl: response.data.authorization_url,
           }
         );
-      // } else {
-      //   return next(
-      //     new AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500)
-      //   );
-      // }
+      } else {
+        return next(
+          new AppError(`Payment initiation failed. Please try again. Here is why ${response.data}`, 500)
+        );
+      }
     });
   });
 

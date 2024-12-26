@@ -116,37 +116,36 @@ exports.createEventBooking = (0, catchAsync_1.default)((req, res, next) => __awa
         });
         resPaystack.on("end", () => __awaiter(void 0, void 0, void 0, function* () {
             const response = JSON.parse(data);
-            // if (response.status) {
-            // Payment initialization was successful
-            const paymentReference = response.data.reference;
-            const booking = yield bookingModel_1.Booking.create({
-                user: user.id,
-                event: eventId,
-                paymentReference, // Store payment reference for verification later
-            });
-            const message = "Kindly confirm the payment if you have completed the payment so that the payment receipt will be sent to you. ";
-            (0, sendBookingEmail_1.sendEventBookingEmail)({
-                fullName: user.fullName,
-                message: message,
-                title: theEvent.title,
-                price: theEvent.price,
-                location: theEvent.location,
-                date: theEvent.date,
-                email: user.email,
-                link: `${process.env.ORIGIN_URL}/booking/confirmpayment/${booking.id}`,
-                linkName: "Confirm Payment",
-                subject: "CONFIRM YOUR TICKET PAYMENT",
-                paymentStatus: "pending",
-            });
-            return (0, appResponse_1.AppResponse)(res, 201, "success", "Payment initiated, event successfully booked. Check you email after completing the payment to confirm booking.", {
-                booking,
-                paymentUrl: response.data.authorization_url,
-            });
-            // } else {
-            //   return next(
-            //     new AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500)
-            //   );
-            // }
+            if (response.status) {
+                // Payment initialization was successful
+                const paymentReference = response.data.reference;
+                const booking = yield bookingModel_1.Booking.create({
+                    user: user.id,
+                    event: eventId,
+                    paymentReference, // Store payment reference for verification later
+                });
+                const message = "Kindly confirm the payment if you have completed the payment so that the payment receipt will be sent to you. ";
+                (0, sendBookingEmail_1.sendEventBookingEmail)({
+                    fullName: user.fullName,
+                    message: message,
+                    title: theEvent.title,
+                    price: theEvent.price,
+                    location: theEvent.location,
+                    date: theEvent.date,
+                    email: user.email,
+                    link: `${process.env.ORIGIN_URL}/booking/confirmpayment/${booking.id}`,
+                    linkName: "Confirm Payment",
+                    subject: "CONFIRM YOUR TICKET PAYMENT",
+                    paymentStatus: "pending",
+                });
+                return (0, appResponse_1.AppResponse)(res, 201, "success", "Payment initiated, event successfully booked. Check you email after completing the payment to confirm booking.", {
+                    booking,
+                    paymentUrl: response.data.authorization_url,
+                });
+            }
+            else {
+                return next(new appError_1.AppError(`Payment initiation failed. Please try again. Here is why ${response.data}`, 500));
+            }
         }));
     });
     reqPaystack.on("error", (error) => {
