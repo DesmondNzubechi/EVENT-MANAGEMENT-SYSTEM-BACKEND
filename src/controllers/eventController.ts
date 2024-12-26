@@ -192,6 +192,31 @@ export const updateEvent = catchAsync(async (req, res, next) => {
   );
 });
 
+
+export const getAnEvent = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const theEvent = await Events.findById(id);
+
+  if (theEvent) {
+    return next(
+      new AppError(
+        "An error occured while fetching this. Please try again",
+        400
+      )
+    );
+  }
+
+
+  return AppResponse(
+    res,
+    200,
+    "success",
+    "event successfully fetched",
+    theEvent
+  );
+
+}) 
 //PUBLISH AN EVENT POST
 export const publishEvent = catchAsync(async (req, res, next) => {
   const { id } = req.params;
