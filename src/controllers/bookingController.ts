@@ -359,7 +359,7 @@ export const getAUserEventBookings = catchAsync(async (req, res, next) => {
     return next(new AppError("Something went wrong. Please try again", 400));
   }
 
-  const userBookings = await Booking.find({ user: user.id }).populate("events");
+  const userBookings = await Booking.find({ user: user.id }).populate("event");
 
   if (!userBookings) {
     return next(

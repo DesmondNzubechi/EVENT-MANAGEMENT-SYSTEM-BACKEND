@@ -269,7 +269,7 @@ exports.getAUserEventBookings = (0, catchAsync_1.default)((req, res, next) => __
     if (!user) {
         return next(new appError_1.AppError("Something went wrong. Please try again", 400));
     }
-    const userBookings = yield bookingModel_1.Booking.find({ user: user.id }).populate("events");
+    const userBookings = yield bookingModel_1.Booking.find({ user: user.id }).populate("event");
     if (!userBookings) {
         return next(new appError_1.AppError("Could not fetch booking by the user. please try again", 400));
     }
