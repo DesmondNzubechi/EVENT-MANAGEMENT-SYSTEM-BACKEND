@@ -130,7 +130,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
     resPaystack.on("end", async () => {
       const response = JSON.parse(data);
 
-      if (response.status) {
+      // if (response.status) {
         // Payment initialization was successful
         const paymentReference = response.data.reference;
 
@@ -167,21 +167,20 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
             paymentUrl: response.data.authorization_url,
           }
         );
-      } else {
-        
-  reqPaystack.on("error", (error) => {
-    console.error("Error making request to Paystack:", error);
-    return next(
-      new AppError(`Payment initialization failed. Please try again . Here is why ${error}`, 500)
-    );
-  });
-        // return next(
-        //   new AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500)
-        // );
-      }
+      // } else {
+      //   return next(
+      //     new AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500)
+      //   );
+      // }
     });
   });
 
+  reqPaystack.on("error", (error) => {
+    console.error("Error making request to Paystack:", error);
+    return next(
+      new AppError(`Payment initialization failed. Please try again. Here is why ${error}`, 500)
+    );
+  });
 
   reqPaystack.write(params);
   reqPaystack.end();
