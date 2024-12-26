@@ -63,6 +63,7 @@ import {
   getAllEvent,
   getAllPublishedEvents,
   getAllUnPublishedEvents,
+  getAnEvent,
   publishEvent,
   unPublishEvent,
   updateEvent,
@@ -153,7 +154,9 @@ router
  */
 router
   .route("/getAllEvent")
-  .get(/*protectedRoute, restrictedRoute(["admin", "super-admin"]), */getAllEvent);
+  .get(
+    /*protectedRoute, restrictedRoute(["admin", "super-admin"]), */ getAllEvent
+  );
 
 /**
  * @swagger
@@ -259,5 +262,7 @@ router
 router
   .route("/deleteEvent/:id")
   .patch(protectedRoute, restrictedRoute(["admin"]), unPublishEvent);
+
+router.route("/event/:id").get(getAnEvent);
 
 export default router;

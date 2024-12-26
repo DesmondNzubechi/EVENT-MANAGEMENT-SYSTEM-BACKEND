@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unPublishEvent = exports.publishEvent = exports.updateEvent = exports.getAllUnPublishedEvents = exports.getAllPublishedEvents = exports.getAllEvent = exports.createEvent = void 0;
+exports.unPublishEvent = exports.publishEvent = exports.getAnEvent = exports.updateEvent = exports.getAllUnPublishedEvents = exports.getAllPublishedEvents = exports.getAllEvent = exports.createEvent = void 0;
 const appError_1 = require("../errors/appError");
 const eventModel_1 = require("../models/eventModel");
 const userModel_1 = __importDefault(require("../models/userModel"));
@@ -122,6 +122,14 @@ exports.updateEvent = (0, catchAsync_1.default)((req, res, next) => __awaiter(vo
     }
     // Respond with success after the event and emails are updated
     return (0, appResponse_1.AppResponse)(res, 200, "success", "Event successfully updated, and emails sent to users", event);
+}));
+exports.getAnEvent = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const theEvent = yield eventModel_1.Events.findById(id);
+    if (theEvent) {
+        return next(new appError_1.AppError("An error occured while fetching this. Please try again", 400));
+    }
+    return (0, appResponse_1.AppResponse)(res, 200, "success", "event successfully fetched", theEvent);
 }));
 //PUBLISH AN EVENT POST
 exports.publishEvent = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

@@ -126,7 +126,8 @@ router
  */
 router
     .route("/getAllEvent")
-    .get(/*protectedRoute, restrictedRoute(["admin", "super-admin"]), */ eventController_1.getAllEvent);
+    .get(
+/*protectedRoute, restrictedRoute(["admin", "super-admin"]), */ eventController_1.getAllEvent);
 /**
  * @swagger
  * /getAllPublishedEvent:
@@ -227,4 +228,5 @@ router
 router
     .route("/deleteEvent/:id")
     .patch(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin"]), eventController_1.unPublishEvent);
+router.route("/event/:id").get(eventController_1.getAnEvent);
 exports.default = router;
