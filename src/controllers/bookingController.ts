@@ -168,19 +168,20 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
           }
         );
       } else {
-        return next(
-          new AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500)
-        );
+        
+  reqPaystack.on("error", (error) => {
+    console.error("Error making request to Paystack:", error);
+    return next(
+      new AppError(`Payment initialization failed. Please try again . Here is why ${error}`, 500)
+    );
+  });
+        // return next(
+        //   new AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500)
+        // );
       }
     });
   });
 
-  reqPaystack.on("error", (error) => {
-    console.error("Error making request to Paystack:", error);
-    return next(
-      new AppError("Payment initialization failed. Please try again", 500)
-    );
-  });
 
   reqPaystack.write(params);
   reqPaystack.end();
