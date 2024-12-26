@@ -169,7 +169,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
         );
       } else {
         return next(
-          new AppError(`Payment initiation failed. Please try again. Here is why ${response.status}`, 500)
+          new AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500)
         );
       }
     });

@@ -144,7 +144,7 @@ exports.createEventBooking = (0, catchAsync_1.default)((req, res, next) => __awa
                 });
             }
             else {
-                return next(new appError_1.AppError(`Payment initiation failed. Please try again. Here is why ${response.status}`, 500));
+                return next(new appError_1.AppError(`Payment initiation failed. Please try again. Here is why ${response}`, 500));
             }
         }));
     });
