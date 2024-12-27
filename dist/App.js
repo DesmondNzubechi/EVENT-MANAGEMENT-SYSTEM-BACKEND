@@ -17,10 +17,14 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)({ path: "./config.env" });
+const { ORIGIN_URL } = process.env;
+if (!ORIGIN_URL) {
+    throw new Error("Make sure that the origin url and the port is defined");
+}
 const app = (0, express_1.default)();
 // CORS configuration
 const corsOptions = {
-    origin: process.env.ORIGIN_URL,
+    origin: ORIGIN_URL,
     credentials: true,
     methods: 'GET,POST,DELETE,PATCH',
     allowedHeaders: 'Content-Type, Authorization, api_key',

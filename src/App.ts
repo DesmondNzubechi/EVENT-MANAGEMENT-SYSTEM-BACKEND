@@ -14,11 +14,17 @@ import { config} from "dotenv"
 
 config({path : "./config.env"})
 
+const { ORIGIN_URL } = process.env;
+
+if (!ORIGIN_URL) {
+  throw new Error("Make sure that the origin url and the port is defined");
+}
+
 
 const app = express();
 // CORS configuration
 const corsOptions = {
-  origin: process.env.ORIGIN_URL,
+  origin: ORIGIN_URL,
   credentials: true, 
   methods: 'GET,POST,DELETE,PATCH',
   allowedHeaders: 'Content-Type, Authorization, api_key',
