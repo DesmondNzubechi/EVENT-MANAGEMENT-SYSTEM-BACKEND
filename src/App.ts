@@ -9,16 +9,22 @@ import cors from "cors";
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
+
+import { config} from "dotenv"
+
+config({path : "./config.env"})
+
+
 const app = express();
 // CORS configuration
 const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true, // Allow credentials (cookies)
+  origin: process.env.ORIGIN_URL,
+  credentials: true, 
   methods: 'GET,POST,DELETE,PATCH',
   allowedHeaders: 'Content-Type, Authorization, api_key',
 };
 
-// Use CORS middleware
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(cookieParser());

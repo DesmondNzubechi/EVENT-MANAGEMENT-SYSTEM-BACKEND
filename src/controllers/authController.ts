@@ -155,7 +155,7 @@ export const loginUser = catchAsync(
         user.id
       );
     }
-  }
+  } 
 );
 
 //FETCH AUTHENTICATED USER INFORMATION

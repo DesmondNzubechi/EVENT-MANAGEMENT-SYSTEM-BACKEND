@@ -15,15 +15,16 @@ const cors_1 = __importDefault(require("cors"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const path_1 = __importDefault(require("path"));
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)({ path: "./config.env" });
 const app = (0, express_1.default)();
 // CORS configuration
 const corsOptions = {
-    origin: "http://localhost:3000",
-    credentials: true, // Allow credentials (cookies)
+    origin: process.env.ORIGIN_URL,
+    credentials: true,
     methods: 'GET,POST,DELETE,PATCH',
     allowedHeaders: 'Content-Type, Authorization, api_key',
 };
-// Use CORS middleware
 app.use((0, cors_1.default)(corsOptions));
 app.options('*', (0, cors_1.default)(corsOptions));
 app.use((0, cookie_parser_1.default)());
