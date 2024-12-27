@@ -21,6 +21,7 @@ const { ORIGIN_URL } = process.env;
 if (!ORIGIN_URL) {
     throw new Error("Make sure that the origin url and the port is defined");
 }
+console.log("The origin", ORIGIN_URL);
 const app = (0, express_1.default)();
 // CORS configuration
 const corsOptions = {
