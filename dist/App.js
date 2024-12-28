@@ -227,7 +227,15 @@ const swaggerOptions = {
     apis: ["./dist/routes/*.js"], // Path to your route files
 };
 const swaggerDocs = (0, swagger_jsdoc_1.default)(swaggerOptions);
-app.use("/api-docs", express_1.default.static("node_modules/swagger-ui-dist/", { index: false }), swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocs));
+// app.use(
+//   "/api-docs",
+//   express.static("node_modules/swagger-ui-dist/", { index: false }),
+//   swaggerUi.serve,
+//   swaggerUi.setup(swaggerDocs)
+// );
+app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocs, {
+    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+}));
 // Serve the Swagger UI static assets (CSS, JS, etc.)
 app.use("/api-docs", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist")));
 app.use("/api-docs/swagger-ui.css", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist/swagger-ui.css")));

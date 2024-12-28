@@ -234,14 +234,21 @@ const swaggerOptions = {
   apis: ["./src/routes/*.ts"], // Path to your route files
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+ const swaggerDocs = swaggerJsDoc(swaggerOptions);
+// app.use(
+//   "/api-docs",
+//   express.static("node_modules/swagger-ui-dist/", { index: false }),
+//   swaggerUi.serve,
+//   swaggerUi.setup(swaggerDocs)
+// );
 app.use(
-  "/api-docs",
-  express.static("node_modules/swagger-ui-dist/", { index: false }),
+  '/api-docs',
   swaggerUi.serve,
-  swaggerUi.setup(swaggerDocs)
+  swaggerUi.setup(swaggerDocs, {
+    customCssUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+  })
 );
-
 // Serve the Swagger UI static assets (CSS, JS, etc.)
 app.use(
   "/api-docs",
