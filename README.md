@@ -1,159 +1,193 @@
-# Backend API for Event Booking Platform
+# Backend API for Event Booking Platform  
 
-Welcome to the backend API of the Event Booking Platform! This API powers the core functionality of a robust event management system, providing secure user authentication, event management, booking, payments, and notifications.
+Welcome to the backend API of the Event Booking Platform! This API powers the core functionality of a robust event management system, providing secure user authentication, event management, booking, payments, and notifications.  
 
-## Features
+## Features  
 
-1. **User Authentication & Authorization**
+1. **User Authentication & Authorization**  
+   - Secure user and admin login with JWT-based authentication.  
+   - Role-based access control for different features.  
 
-   - Secure user and admin login with JWT-based authentication.
-   - Role-based access control for different features.
+2. **Event Management**  
+   - Admins can create, update, and delete events.  
+   - Users can view available events and book them.  
 
-2. **Event Management**
+3. **Booking System**  
+   - Users can book events and manage their bookings.  
+   - Booking history and details are available.  
 
-   - Admins can create, update, and delete events.
-   - Users can view available events and book them.
+4. **Payment Integration**  
+   - Secure payment gateway for processing user bookings.  
 
-3. **Booking System**
+5. **Email Notifications**  
+   - Automated emails for confirmations, updates, and cancellations.  
 
-   - Users can book events and manage their bookings.
-   - Booking history and details are available.
+6. **Comprehensive Testing**  
+   - Integration tests ensure reliability for authentication, user updates, and more.  
 
-4. **Payment Integration**
+## Tech Stack  
 
-   - Secure payment gateway for processing user bookings.
+- **Node.js**: Server-side JavaScript runtime.  
+- **Express.js**: Backend framework for building the API.  
+- **MongoDB**: Database for storing user, event, and booking data.  
+- **JWT**: For secure authentication.  
+- **Nodemailer**: For email notifications.  
+- **Supertest**: For integration testing.  
 
-5. **Email Notifications**
+## Installation  
 
-   - Automated emails for confirmations, updates, and cancellations.
+1. Clone the repository:  
+   ```bash  
+   git clone https://github.com/desmondNzubechi/event-booking-backend.git  
+   ```  
 
-6. **Comprehensive Testing**
-   - Integration tests ensure reliability for authentication, user updates, and more.
+2. Navigate to the project directory:  
+   ```bash  
+   cd event-booking-backend  
+   ```  
 
-## Tech Stack
+3. Install dependencies:  
+   ```bash  
+   npm install  
+   ```  
 
-- **Node.js**: Server-side JavaScript runtime.
-- **Express.js**: Backend framework for building the API.
-- **MongoDB**: Database for storing user, event, and booking data.
-- **JWT**: For secure authentication.
-- **Nodemailer**: For email notifications.
-- **Supertest**: For integration testing.
-
-## Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-username/event-booking-backend.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
-   cd event-booking-backend
-   ```
-
-3. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-4. Set up environment variables:
-
-   - Create a `.env` file in the root directory.
+4. Set up environment variables:  
+   - Create a `.env` file in the root directory.  
    - Add the following variables:  
-      `plaintext  
-     DATABASE_URL=
-PORT=
-NODE_ENV=
-JWT_SECRET=
-JWT_EXPIRES_IN=
-JWT_COOKIE_EXPIRES=
-EMAIL_PASSWORD=
-EMAIL_USERNAME=
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_FROM=
-ORIGIN_URL=
-TEST_URL=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-CLOUD_NAME=
-CLOUDINARY_URL=
-backendUrl=
-     `
+     ```plaintext  
+     PORT=5000  
+     DATABASE_URL=<Your MongoDB connection string>  
+     JWT_SECRET=<Your JWT secret>  
+     EMAIL_HOST=<Your email host>  
+     EMAIL_PORT=<Your email port>  
+     EMAIL_USER=<Your email user>  
+     EMAIL_PASS=<Your email password>  
+     NODE_ENV=<Your environment>
+     JWT_EXPIRES_IN=<expiration date>
+     JWT_COOKIE_EXPIRES=<expiration date>
+     EMAIL_FROM=<your email>
+     CLOUDINARY_API_KEY=<your cloudinary API key>
+     CLOUDINARY_API_SECRET=<your secret>
+     CLOUD_NAME=<name>
+     CLOUDINARY_URL=<the url>
+     ORIGIN_URL=<your frontend url>
+     ```  
 
-5. Start the server:
-   ```bash
-   npm start
-   ```
+5. Start the server:  
+   ```bash  
+   npm start  
+   ```  
 
-## API Endpoints
+## API Endpoints  
 
-### Authentication
+### Authentication  
 
 - **POST** `/api/v1/auth/register`  
-  Register a new user.
+  Register a new user.  
 
 - **POST** `/api/v1/auth/login`  
-  Log in an existing user.
+  Log in an existing user.  
 
 - **POST** `/api/v1/auth/logout`  
-  Log out the user.
+  Log out the user.  
 
 - **POST** `/api/v1/auth/forgot-password`  
-  Initiate a password reset process.
+  Initiate a password reset process.  
 
 - **PATCH** `/api/v1/auth/reset-password/:token`  
-  Reset the user’s password using the token.
+  Reset the user’s password using the token.  
 
-### Users
+  - **GET** `/api/v1/auth/fetchMe`  
+  Fetch authenticated user information
 
-- **GET** `/api/v1/users/:id`  
-  Get user details by ID (admin only).
+  - **PATCH** `/api/v1/auth/updateMe`  
+  Update authenticated user information. 
 
-- **PATCH** `/api/v1/users/:id`  
-  Update user profile.
+  - **PATCH** `/api/v1/auth/changePassword`  
+  Change the authenticated user password
 
-### Events
+  - **PATCH** `/api/v1/auth/verifyEmail`  
+  Verify user email
 
-- **GET** `/api/v1/events`  
-  Fetch all events.
+  - **PATCH** `/api/v1/auth/sendVerificationCode`  
+  Send Verification code to the user
 
-- **POST** `/api/v1/events`  
-  Create a new event (admin only).
 
-- **PATCH** `/api/v1/events/:id`  
-  Update event details (admin only).
+### Users  
 
-- **DELETE** `/api/v1/events/:id`  
-  Delete an event (admin only).
+- **POST** `/api/v1/user/createUser`  
+  create a new user (admin only).  
 
-### Bookings
+- **GET** `/api/v1/user/getAllUser`  
+  Get all user details(admin only).
 
-- **POST** `/api/v1/bookings`  
-  Create a new booking for an event.
+  - **GET** `/api/v1/user/getAUser`  
+  Get user details by ID (admin only).  
 
-- **GET** `/api/v1/bookings`  
-  Fetch all bookings for the authenticated user.
+- **DELETE** `/api/v1/user/deleteAUser`  
+  Delete user(admin only)
 
-### Testing
+  - **PATCH** `/api/v1/user/updateAUser`  
+  update user details by ID (admin only).  
+ 
 
-Run the test suite:
+### Events  
 
-```bash
-npm test
-```
+- **GET** `/api/v1/event//getAllEvent`  
+  Fetch all events.  
 
-The backend has integration tests for critical features such as authentication and user updates.
+  - **GET** `/api/v1/event/event/:id`  
+  Fetch an event..
 
-## Future Enhancements
+- **POST** `/api/v1/event/createEvent`  
+  Create a new event (admin only).  
 
-1. Add more filters and sorting options for events.
-2. Implement admin dashboard for better management.
-3. Enhance notifications with SMS support.
+- **PATCH** `/api/v1/event/updateEvent/:id`  
+  Update event details (admin only).  
 
-## Contributions
+- **GET** `/api/v1/event/getAllPublishedEvent`  
+  Fetch all published events
 
-Contributions are welcome! Please fork the repository and submit a pull request with your proposed changes.
+- **GET** `/api/v1/event/getAllUnpublishedEvent`  
+  Fetch all unpublished events.(only admin)  
+
+- **PATCH** `/api/v1/event//publishEvent`  
+  Publish an event (only admin)
+
+- **PATCH** `/api/v1/event/unPublishEvent`  
+  Unpublish an event (admin only).  
+
+- **DELETE** `/api/v1/event/deleteEvent/:id`  
+  Delete an event by id(admin only).  
+
+### Bookings  
+
+- **POST** `/api/v1/booking/bookEvent/:eventId`  
+  Create a new booking for an event.  
+
+- **GET** `/api/v1/booking/getUserBookedEvent`  
+  Fetch all bookings for the authenticated user.  
+
+  - **GET** `/api/v1/booking/getAllTheEventBookings`  
+  Fetch all booked event.(only admin)
+
+- **GET** `/api/v1/booking/bookEvent/confirmPayment/:bookingId`  
+  Confirm booking payment 
+
+### Testing  
+
+Run the test suite:  
+```bash  
+npm test  
+```  
+The backend has integration tests for critical features such as authentication and user updates.  
+
+## Future Enhancements  
+
+1. Add more filters and sorting options for events.  
+2. Implement admin dashboard for better management.  
+3. Enhance notifications with SMS support.  
+
+## Contributions  
+
+Contributions are welcome! Please fork the repository and submit a pull request with your proposed changes.  
