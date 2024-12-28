@@ -60,7 +60,7 @@ const globalErrorHandler = (err, req, res, next) => {
             error = handleDuplicateFields(error);
         if (error.name === "validationError")
             error = handleValidationError(error);
-        if (error.name === 'JsonWebTokenError')
+        if (error.name === "JsonWebTokenError")
             error = handleJWTErr();
         if (error.name === "TokenExpiredError")
             error = handleJWTExpiredError();

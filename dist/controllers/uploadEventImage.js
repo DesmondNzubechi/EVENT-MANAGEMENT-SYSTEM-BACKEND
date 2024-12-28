@@ -16,6 +16,6 @@ const multerFilter = (req, file, cb) => {
 };
 const upload = (0, multer_1.default)({
     storage: multerStorage,
-    fileFilter: multerFilter
+    fileFilter: multerFilter,
 });
 exports.uploadImageToMemory = upload.single("image");

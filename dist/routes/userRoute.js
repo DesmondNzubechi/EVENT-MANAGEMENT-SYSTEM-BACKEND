@@ -1,34 +1,8 @@
 "use strict";
-// import express from "express";
-// import { protectedRoute, restrictedRoute } from "../controllers/authController";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import {
-//   createAUser,
-//   deleteAUser,
-//   getAllUser,
-//   getAUser,
-//   updateUser,
-// } from "../controllers/userController";
-// const router = express.Router();
-// router
-//   .route("/createUser")
-//   .post(protectedRoute, restrictedRoute(["admin"]), createAUser);
-// router
-//   .route("/getAUser")
-//   .get(protectedRoute, restrictedRoute(["admin"]), getAUser);
-// router
-//   .route("/getAllUser")
-//   .get(protectedRoute, restrictedRoute(["admin"]), getAllUser);
-// router
-//   .route("/deleteAUser")
-//   .patch(protectedRoute, restrictedRoute(["admin"]), deleteAUser);
-// router
-//   .route("/updateAUser")
-//   .patch(protectedRoute, restrictedRoute(["admin"]), updateUser);
-// export default router;
 const express_1 = __importDefault(require("express"));
 const authController_1 = require("../controllers/authController");
 const userController_1 = require("../controllers/userController");

@@ -1,26 +1,8 @@
 "use strict";
-// import express from "express";
-// import { protectedRoute, restrictedRoute } from "../controllers/authController";
-// import {
-//   confirmBooking,
-//   createEventBooking,
-//   getAllTheEventBooked,
-//   getAUserEventBookings,
-// } from "../controllers/bookingController";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// const router = express.Router();
-// router.route("/bookEvent/:eventId").post(protectedRoute, createEventBooking);
-// router
-//   .route("/bookEvent/confirmPayment/:bookingId")
-//   .get(protectedRoute, confirmBooking);
-// router
-//   .route("/getAllTheEventBookings")
-//   .get(protectedRoute, restrictedRoute(["admin"]), getAllTheEventBooked);
-// router.route("/getUserBookedEvent").get(protectedRoute, getAUserEventBookings);
-// export default router;
 const express_1 = __importDefault(require("express"));
 const authController_1 = require("../controllers/authController");
 const bookingController_1 = require("../controllers/bookingController");

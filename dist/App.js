@@ -27,11 +27,11 @@ const app = (0, express_1.default)();
 const corsOptions = {
     origin: ORIGIN_URL,
     credentials: true,
-    methods: 'GET,POST,DELETE,PATCH',
-    allowedHeaders: 'Content-Type, Authorization, api_key',
+    methods: "GET,POST,DELETE,PATCH",
+    allowedHeaders: "Content-Type, Authorization, api_key",
 };
 app.use((0, cors_1.default)(corsOptions));
-app.options('*', (0, cors_1.default)(corsOptions));
+app.options("*", (0, cors_1.default)(corsOptions));
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 app.get("/", (req, res) => {
