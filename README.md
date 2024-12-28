@@ -1,141 +1,159 @@
-Here’s a detailed README for your backend project:
+# Backend API for Event Booking Platform
 
----
+Welcome to the backend API of the Event Booking Platform! This API powers the core functionality of a robust event management system, providing secure user authentication, event management, booking, payments, and notifications.
 
-# Backend API for Event Booking Platform  
+## Features
 
-Welcome to the backend API of the Event Booking Platform! This API powers the core functionality of a robust event management system, providing secure user authentication, event management, booking, payments, and notifications.  
+1. **User Authentication & Authorization**
 
-## Features  
+   - Secure user and admin login with JWT-based authentication.
+   - Role-based access control for different features.
 
-1. **User Authentication & Authorization**  
-   - Secure user and admin login with JWT-based authentication.  
-   - Role-based access control for different features.  
+2. **Event Management**
 
-2. **Event Management**  
-   - Admins can create, update, and delete events.  
-   - Users can view available events and book them.  
+   - Admins can create, update, and delete events.
+   - Users can view available events and book them.
 
-3. **Booking System**  
-   - Users can book events and manage their bookings.  
-   - Booking history and details are available.  
+3. **Booking System**
 
-4. **Payment Integration**  
-   - Secure payment gateway for processing user bookings.  
+   - Users can book events and manage their bookings.
+   - Booking history and details are available.
 
-5. **Email Notifications**  
-   - Automated emails for confirmations, updates, and cancellations.  
+4. **Payment Integration**
 
-6. **Comprehensive Testing**  
-   - Integration tests ensure reliability for authentication, user updates, and more.  
+   - Secure payment gateway for processing user bookings.
 
-## Tech Stack  
+5. **Email Notifications**
 
-- **Node.js**: Server-side JavaScript runtime.  
-- **Express.js**: Backend framework for building the API.  
-- **MongoDB**: Database for storing user, event, and booking data.  
-- **JWT**: For secure authentication.  
-- **Nodemailer**: For email notifications.  
-- **Supertest**: For integration testing.  
+   - Automated emails for confirmations, updates, and cancellations.
 
-## Installation  
+6. **Comprehensive Testing**
+   - Integration tests ensure reliability for authentication, user updates, and more.
 
-1. Clone the repository:  
-   ```bash  
-   git clone https://github.com/your-username/event-booking-backend.git  
-   ```  
+## Tech Stack
 
-2. Navigate to the project directory:  
-   ```bash  
-   cd event-booking-backend  
-   ```  
+- **Node.js**: Server-side JavaScript runtime.
+- **Express.js**: Backend framework for building the API.
+- **MongoDB**: Database for storing user, event, and booking data.
+- **JWT**: For secure authentication.
+- **Nodemailer**: For email notifications.
+- **Supertest**: For integration testing.
 
-3. Install dependencies:  
-   ```bash  
-   npm install  
-   ```  
+## Installation
 
-4. Set up environment variables:  
-   - Create a `.env` file in the root directory.  
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/event-booking-backend.git
+   ```
+
+2. Navigate to the project directory:
+
+   ```bash
+   cd event-booking-backend
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Set up environment variables:
+
+   - Create a `.env` file in the root directory.
    - Add the following variables:  
-     ```plaintext  
-     PORT=5000  
-     MONGO_URI=<Your MongoDB connection string>  
-     JWT_SECRET=<Your JWT secret>  
-     EMAIL_HOST=<Your email host>  
-     EMAIL_PORT=<Your email port>  
-     EMAIL_USER=<Your email user>  
-     EMAIL_PASS=<Your email password>  
-     ```  
+      `plaintext  
+     DATABASE_URL=
+PORT=
+NODE_ENV=
+JWT_SECRET=
+JWT_EXPIRES_IN=
+JWT_COOKIE_EXPIRES=
+EMAIL_PASSWORD=
+EMAIL_USERNAME=
+EMAIL_HOST=
+EMAIL_PORT=
+EMAIL_FROM=
+ORIGIN_URL=
+TEST_URL=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+CLOUD_NAME=
+CLOUDINARY_URL=
+backendUrl=
+     `
 
-5. Start the server:  
-   ```bash  
-   npm start  
-   ```  
+5. Start the server:
+   ```bash
+   npm start
+   ```
 
-## API Endpoints  
+## API Endpoints
 
-### Authentication  
+### Authentication
 
 - **POST** `/api/v1/auth/register`  
-  Register a new user.  
+  Register a new user.
 
 - **POST** `/api/v1/auth/login`  
-  Log in an existing user.  
+  Log in an existing user.
 
 - **POST** `/api/v1/auth/logout`  
-  Log out the user.  
+  Log out the user.
 
 - **POST** `/api/v1/auth/forgot-password`  
-  Initiate a password reset process.  
+  Initiate a password reset process.
 
 - **PATCH** `/api/v1/auth/reset-password/:token`  
-  Reset the user’s password using the token.  
+  Reset the user’s password using the token.
 
-### Users  
+### Users
 
 - **GET** `/api/v1/users/:id`  
-  Get user details by ID (admin only).  
+  Get user details by ID (admin only).
 
 - **PATCH** `/api/v1/users/:id`  
-  Update user profile.  
+  Update user profile.
 
-### Events  
+### Events
 
 - **GET** `/api/v1/events`  
-  Fetch all events.  
+  Fetch all events.
 
 - **POST** `/api/v1/events`  
-  Create a new event (admin only).  
+  Create a new event (admin only).
 
 - **PATCH** `/api/v1/events/:id`  
-  Update event details (admin only).  
+  Update event details (admin only).
 
 - **DELETE** `/api/v1/events/:id`  
-  Delete an event (admin only).  
+  Delete an event (admin only).
 
-### Bookings  
+### Bookings
 
 - **POST** `/api/v1/bookings`  
-  Create a new booking for an event.  
+  Create a new booking for an event.
 
 - **GET** `/api/v1/bookings`  
-  Fetch all bookings for the authenticated user.  
+  Fetch all bookings for the authenticated user.
 
-### Testing  
+### Testing
 
-Run the test suite:  
-```bash  
-npm test  
-```  
-The backend has integration tests for critical features such as authentication and user updates.  
+Run the test suite:
 
-## Future Enhancements  
+```bash
+npm test
+```
 
-1. Add more filters and sorting options for events.  
-2. Implement admin dashboard for better management.  
-3. Enhance notifications with SMS support.  
+The backend has integration tests for critical features such as authentication and user updates.
 
-## Contributions  
+## Future Enhancements
 
-Contributions are welcome! Please fork the repository and submit a pull request with your proposed changes.  
+1. Add more filters and sorting options for events.
+2. Implement admin dashboard for better management.
+3. Enhance notifications with SMS support.
+
+## Contributions
+
+Contributions are welcome! Please fork the repository and submit a pull request with your proposed changes.
