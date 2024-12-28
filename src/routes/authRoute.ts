@@ -19,80 +19,177 @@ const router = express.Router();
 
 /**
  * @swagger
- * /register:
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - password
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Auto-generated ID of the user
+ *         name:
+ *           type: string
+ *           description: Full name of the user
+ *         email:
+ *           type: string
+ *           description: User's email address
+ *         password:
+ *           type: string
+ *           description: User's password
+ *           format: password
+ *         role:
+ *           type: string
+ *           enum: [user, admin, super-admin]
+ *           description: Role of the user
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: Date the user was created
+ */
+
+
+/**
+ * @swagger
+ * /api/v1/auth/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       201:
  *         description: User registered successfully
  *       400:
- *         description: Bad request
+ *         description: Validation error
  */
 router.route("/register").post(registerUser);
 
 /**
  * @swagger
- * /login:
+ * /api/v1/auth/login:
  *   post:
- *     summary: Log in a user
+ *     summary: Log in an existing user
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's email address
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 format: password
  *     responses:
  *       200:
  *         description: User logged in successfully
  *       401:
- *         description: Unauthorized
+ *         description: Invalid credentials
  */
+
 router.route("/login").post(loginUser);
 
 /**
  * @swagger
- * /fetchMe:
+ * /api/v1/auth/fetchMe:
  *   get:
  *     summary: Fetch current user details
  *     tags: [Auth]
  *     responses:
  *       200:
- *         description: User details fetched successfully
+ *         description: User details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       403:
  *         description: Access forbidden
  */
 router.route("/fetchMe").get(fetchMe);
-
 /**
  * @swagger
- * /updateMe:
+ * /api/v1/auth/updateMe:
  *   patch:
  *     summary: Update user profile
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
  *     responses:
  *       200:
  *         description: User profile updated successfully
  *       403:
  *         description: Access forbidden
  */
+
 router.route("/updateMe").patch(protectedRoute, updateMe);
 
 /**
  * @swagger
- * /changePassword:
+ * /api/v1/auth/changePassword:
  *   patch:
  *     summary: Change user password
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 description: Current user password
+ *                 format: password
+ *               newPassword:
+ *                 type: string
+ *                 description: New user password
+ *                 format: password
  *     responses:
  *       200:
  *         description: Password changed successfully
  *       401:
- *         description: Unauthorized
+ *         description: Invalid credentials
  */
+
 router.route("/changePassword").patch(changeUserPassword);
 
 /**
  * @swagger
- * /forgotPassword:
+ * /api/v1/auth/forgotPassword:
  *   post:
  *     summary: Request a password reset
  *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: User's email address
  *     responses:
  *       200:
  *         description: Password reset email sent
@@ -103,7 +200,7 @@ router.route("/forgotPassword").post(forgottPassword);
 
 /**
  * @swagger
- * /makeUserAdmin/{id}:
+ * /api/v1/auth/makeUserAdmin/{id}:
  *   patch:
  *     summary: Grant admin role to a user
  *     tags: [Auth]
@@ -120,13 +217,15 @@ router.route("/forgotPassword").post(forgottPassword);
  *       403:
  *         description: Access forbidden
  */
+
 router
   .route("/makeUserAdmin/:id")
   .patch(protectedRoute, restrictedRoute(["super-admin"]), makeUserAdmin);
 
+
 /**
  * @swagger
- * /resetPassword/{token}:
+ * /api/v1/auth/resetPassword/{token}:
  *   patch:
  *     summary: Reset password with token
  *     tags: [Auth]
@@ -137,17 +236,32 @@ router
  *         schema:
  *           type: string
  *           description: Password reset token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: New password
+ *                 format: password
+ *               confirmPassword:
+ *                 type: string
+ *                 description: Confirm the new password
  *     responses:
  *       200:
  *         description: Password reset successfully
  *       400:
- *         description: Invalid token or expired
+ *         description: Invalid token or password mismatch
  */
 router.route("/resetPassword/:token").patch(resetPassword);
 
+
 /**
  * @swagger
- * /verifyEmail:
+ * /api/v1/auth/verifyEmail:
  *   patch:
  *     summary: Verify user email
  *     tags: [Auth]
@@ -161,7 +275,7 @@ router.route("/verifyEmail").patch(verifyUserEmail);
 
 /**
  * @swagger
- * /logout:
+ * /api/v1/auth/logout:
  *   post:
  *     summary: Log out the user
  *     tags: [Auth]
@@ -173,13 +287,13 @@ router.route("/logout").post(logoutUser);
 
 /**
  * @swagger
- * /logout:
+ * //sendVerificationCode:
  *   post:
- *     summary: Log out the user
+ *     summary: Send verification code to the user
  *     tags: [Auth]
  *     responses:
- *       200:
- *         description: User logged out successfully
+ *       201:
+ *         description: verification code successfully sent
  */
 router.route("/sendVerificationCode").patch(sendVerificationCode);
 
