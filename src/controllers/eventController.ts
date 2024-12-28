@@ -8,7 +8,7 @@ import { configDotenv } from "dotenv";
 import { sendEventEmail } from "../utils/sendEventEmail";
 import { AppResponse } from "../utils/appResponse";
 import { uploadFileToCloudinary } from "../utils/uploadToCloudinary";
- 
+
 configDotenv({ path: "./config.env" });
 
 const { ORIGIN_URL } = process.env;
@@ -192,7 +192,6 @@ export const updateEvent = catchAsync(async (req, res, next) => {
   );
 });
 
-
 export const getAnEvent = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
@@ -207,7 +206,6 @@ export const getAnEvent = catchAsync(async (req, res, next) => {
     );
   }
 
-
   return AppResponse(
     res,
     200,
@@ -215,8 +213,7 @@ export const getAnEvent = catchAsync(async (req, res, next) => {
     "event successfully fetched",
     theEvent
   );
-
-}) 
+});
 //PUBLISH AN EVENT POST
 export const publishEvent = catchAsync(async (req, res, next) => {
   const { id } = req.params;

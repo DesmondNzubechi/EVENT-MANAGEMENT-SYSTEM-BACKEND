@@ -80,7 +80,7 @@ export const registerUser = catchAsync(
       password,
       confirmPassword,
     });
- 
+
     const verificationCode = await generatEmailVerificationCode();
     const verificationMessage =
       "Thank you for signing up for The Uevent! To start booking your favorite events, please verify your email using the verification code below. Note: This code will expire in 30 minutes.";
@@ -155,7 +155,7 @@ export const loginUser = catchAsync(
         user.id
       );
     }
-  } 
+  }
 );
 
 //FETCH AUTHENTICATED USER INFORMATION
@@ -433,9 +433,9 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 });
 
 export const sendVerificationCode = catchAsync(async (req, res, next) => {
-  const { email} = req.body;
+  const { email } = req.body;
 
-  const user = await User.findOne({email});
+  const user = await User.findOne({ email });
 
   if (!user) {
     return next(new AppError("User does not exist", 404));

@@ -11,7 +11,7 @@ import { generateReceiptPdf } from "../utils/generateReceiptPdf";
 import { uploadFileToCloudinary } from "../utils/uploadToCloudinary";
 
 configDotenv({ path: "./config.env" });
- 
+
 const { ORIGIN_URL, TEST_URL } = process.env;
 
 export const createEventBooking = catchAsync(async (req, res, next) => {
@@ -130,7 +130,7 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
     resPaystack.on("end", async () => {
       const response = JSON.parse(data);
 
-       if (response.status) {
+      if (response.status) {
         // Payment initialization was successful
         const paymentReference = response.data.reference;
 
@@ -169,7 +169,10 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
         );
       } else {
         return next(
-          new AppError(`Payment initiation failed. Please try again. Here is why ${response.data}`, 500)
+          new AppError(
+            `Payment initiation failed. Please try again. Here is why ${response.data}`,
+            500
+          )
         );
       }
     });
@@ -178,7 +181,10 @@ export const createEventBooking = catchAsync(async (req, res, next) => {
   reqPaystack.on("error", (error) => {
     console.error("Error making request to Paystack:", error);
     return next(
-      new AppError(`Payment initialization failed. Please try again. Here is why ${error}`, 500)
+      new AppError(
+        `Payment initialization failed. Please try again. Here is why ${error}`,
+        500
+      )
     );
   });
 

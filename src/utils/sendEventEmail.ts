@@ -1,7 +1,6 @@
 import nodemailer from "nodemailer";
 import { AppError } from "../errors/appError";
 import { configDotenv } from "dotenv";
-import catchAsync from "./catchAsync";
 
 configDotenv({ path: "./config.env" });
 

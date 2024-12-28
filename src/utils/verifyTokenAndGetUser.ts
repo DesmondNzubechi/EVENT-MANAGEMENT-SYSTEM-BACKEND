@@ -1,4 +1,4 @@
-import jwt, { decode } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { NextFunction } from "express";
 import { config } from "dotenv";
 import { AppError } from "../errors/appError";

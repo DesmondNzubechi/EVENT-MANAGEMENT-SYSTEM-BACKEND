@@ -10,9 +10,9 @@ import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
 
-import { config} from "dotenv"
+import { config } from "dotenv";
 
-config({path : "./config.env"})
+config({ path: "./config.env" });
 
 const { ORIGIN_URL } = process.env;
 
@@ -20,23 +20,21 @@ if (!ORIGIN_URL) {
   throw new Error("Make sure that the origin url and the port is defined");
 }
 
-console.log("The origin", ORIGIN_URL) 
-
+console.log("The origin", ORIGIN_URL);
 
 const app = express();
 // CORS configuration
 const corsOptions = {
   origin: ORIGIN_URL,
-  credentials: true, 
-  methods: 'GET,POST,DELETE,PATCH',
-  allowedHeaders: 'Content-Type, Authorization, api_key',
+  credentials: true,
+  methods: "GET,POST,DELETE,PATCH",
+  allowedHeaders: "Content-Type, Authorization, api_key",
 };
 
-
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(cookieParser());
- 
+
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
@@ -76,7 +74,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocs)
 );
- 
+
 // Serve the Swagger UI static assets (CSS, JS, etc.)
 app.use(
   "/api-docs",

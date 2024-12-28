@@ -32,8 +32,10 @@ const handleValidationError = (err: validatorError): AppError => {
 };
 
 // Error handler for JWT Errors
-const handleJWTErr = (): AppError => new AppError("Invalid token. Please login again", 401);
-const handleJWTExpiredError = (): AppError => new AppError("Your token already expired. Please login again", 401);
+const handleJWTErr = (): AppError =>
+  new AppError("Invalid token. Please login again", 401);
+const handleJWTExpiredError = (): AppError =>
+  new AppError("Your token already expired. Please login again", 401);
 
 const sendDevError = (err: AppError, res: Response): void => {
   res.status(err.statusCode || 500).json({
@@ -75,7 +77,7 @@ const globalErrorHandler = (
     if (error.name === "castError") error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFields(error);
     if (error.name === "validationError") error = handleValidationError(error);
-    if (error.name === 'JsonWebTokenError') error = handleJWTErr();
+    if (error.name === "JsonWebTokenError") error = handleJWTErr();
     if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
 
     sendProdError(err, res);
