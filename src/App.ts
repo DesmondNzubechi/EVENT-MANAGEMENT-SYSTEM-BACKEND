@@ -125,7 +125,10 @@ app.use(
   "/api-docs",
   express.static("node_modules/swagger-ui-dist/", { index: false }),
   swaggerUi.serve,
-  swaggerUi.setup(swaggerDocs)
+  swaggerUi.setup(swaggerDocs, {
+    customCssUrl:
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+  })
 );
 
 // Serve the Swagger UI static assets (CSS, JS, etc.)

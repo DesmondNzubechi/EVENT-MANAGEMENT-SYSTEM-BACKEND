@@ -9,7 +9,6 @@
     "start": "src/Server.ts",
     "dev": "nodemon src/Server.ts",
     "clean": "rm -rf dist"
-
   },
   "author": "desmond nzubechukwu",
   "license": "ISC",
