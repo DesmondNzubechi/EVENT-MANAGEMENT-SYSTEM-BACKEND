@@ -114,7 +114,7 @@ const swaggerOptions = {
 };
 const swaggerDocs = (0, swagger_jsdoc_1.default)(swaggerOptions);
 app.use("/api-docs", express_1.default.static("node_modules/swagger-ui-dist/", { index: false }), swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocs, {
-    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.19.1/swagger-ui.min.css',
 }));
 // Serve the Swagger UI static assets (CSS, JS, etc.)
 app.use("/api-docs", express_1.default.static(path_1.default.join(__dirname, "node_modules/swagger-ui-dist")));
