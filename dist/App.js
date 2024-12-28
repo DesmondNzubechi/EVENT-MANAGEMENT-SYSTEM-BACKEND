@@ -110,7 +110,7 @@ const swaggerOptions = {
             },
         },
     },
-    apis: ['./dist/routes/*.js'], // Path to your route files
+    apis: ['./src/routes/*.ts'], // Path to your route files
 };
 const swaggerDocs = (0, swagger_jsdoc_1.default)(swaggerOptions);
 app.use("/api-docs", express_1.default.static("node_modules/swagger-ui-dist/", { index: false }), swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocs));
