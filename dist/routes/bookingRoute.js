@@ -9,7 +9,7 @@ const bookingController_1 = require("../controllers/bookingController");
 const router = express_1.default.Router();
 /**
  * @swagger
- * /bookEvent/{eventId}:
+ * /api/v1/booking/bookEvent/{eventId}:
  *   post:
  *     summary: Book an event
  *     tags: [Bookings]
@@ -29,7 +29,7 @@ const router = express_1.default.Router();
 router.route("/bookEvent/:eventId").post(authController_1.protectedRoute, bookingController_1.createEventBooking);
 /**
  * @swagger
- * /bookEvent/confirmPayment/{bookingId}:
+ * /api/v1/booking/bookEvent/confirmPayment/{bookingId}:
  *   get:
  *     summary: Confirm payment for an event booking
  *     tags: [Bookings]
@@ -51,7 +51,7 @@ router
     .get(authController_1.protectedRoute, bookingController_1.confirmBooking);
 /**
  * @swagger
- * /getAllTheEventBookings:
+ * /api/v1/booking/getAllTheEventBookings:
  *   get:
  *     summary: Get all event bookings
  *     tags: [Bookings]
@@ -66,7 +66,7 @@ router
     .get(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin"]), bookingController_1.getAllTheEventBooked);
 /**
  * @swagger
- * /getUserBookedEvent:
+ * /api/v1/booking/getUserBookedEvent:
  *   get:
  *     summary: Get a user's event bookings
  *     tags: [Bookings]

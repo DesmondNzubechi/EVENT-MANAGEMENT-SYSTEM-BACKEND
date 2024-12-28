@@ -16,7 +16,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /createEvent:
+ * /api/v1/event/createEvent:
  *   post:
  *     summary: Create a new event
  *     tags: [Events]
@@ -57,7 +57,7 @@ router
 
 /**
  * @swagger
- * /updateEvent/{id}:
+ *  /api/v1/event/updateEvent/{id}:
  *   patch:
  *     summary: Update an existing event
  *     tags: [Events]
@@ -84,25 +84,23 @@ router
 
 /**
  * @swagger
- * /getAllEvent:
+ *  /api/v1/event/getAllEvent:
  *   get:
  *     summary: Get all events
  *     tags: [Events]
  *     responses:
  *       200:
- *         description: List of events
+ *         description: List of all events
  *       403:
  *         description: Access forbidden
  */
 router
   .route("/getAllEvent")
-  .get(
-    /*protectedRoute, restrictedRoute(["admin", "super-admin"]), */ getAllEvent
-  );
+  .get(getAllEvent);
 
 /**
  * @swagger
- * /getAllPublishedEvent:
+ *  /api/v1/event/getAllPublishedEvent:
  *   get:
  *     summary: Get all published events
  *     tags: [Events]
@@ -116,7 +114,7 @@ router
 
 /**
  * @swagger
- * /getAllUnpublishedEvent:
+ *  /api/v1/event/getAllUnpublishedEvent:
  *   get:
  *     summary: Get all unpublished events
  *     tags: [Events]
@@ -132,7 +130,7 @@ router
 
 /**
  * @swagger
- * /publishEvent:
+ *  /api/v1/event/publishEvent:
  *   patch:
  *     summary: Publish an event
  *     tags: [Events]
@@ -158,7 +156,7 @@ router
 
 /**
  * @swagger
- * /unPublishEvent:
+ *  /api/v1/event/unPublishEvent:
  *   patch:
  *     summary: Unpublish an event
  *     tags: [Events]
@@ -184,9 +182,9 @@ router
 
 /**
  * @swagger
- * /deleteEvent/{id}:
+ *  /api/v1/event/deleteEvent/{id}:
  *   patch:
- *     summary: Delete an event
+ *     summary: Delete an event (Unpublish it)
  *     tags: [Events]
  *     parameters:
  *       - in: path
@@ -205,6 +203,25 @@ router
   .route("/deleteEvent/:id")
   .patch(protectedRoute, restrictedRoute(["admin"]), unPublishEvent);
 
+/**
+ * @swagger
+ *  /api/v1/event/event/{id}:
+ *   get:
+ *     summary: Get a specific event by ID
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: Event ID
+ *     responses:
+ *       200:
+ *         description: Event details
+ *       403:
+ *         description: Access forbidden
+ */
 router.route("/event/:id").get(getAnEvent);
 
 export default router;

@@ -10,7 +10,7 @@ const uploadEventImage_1 = require("../controllers/uploadEventImage");
 const router = express_1.default.Router();
 /**
  * @swagger
- * /createEvent:
+ * /api/v1/event/createEvent:
  *   post:
  *     summary: Create a new event
  *     tags: [Events]
@@ -45,7 +45,7 @@ router
     .post(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin", "super-admin"]), uploadEventImage_1.uploadImageToMemory, eventController_1.createEvent);
 /**
  * @swagger
- * /updateEvent/{id}:
+ *  /api/v1/event/updateEvent/{id}:
  *   patch:
  *     summary: Update an existing event
  *     tags: [Events]
@@ -67,23 +67,22 @@ router
     .patch(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin", "super-admin"]), eventController_1.updateEvent);
 /**
  * @swagger
- * /getAllEvent:
+ *  /api/v1/event/getAllEvent:
  *   get:
  *     summary: Get all events
  *     tags: [Events]
  *     responses:
  *       200:
- *         description: List of events
+ *         description: List of all events
  *       403:
  *         description: Access forbidden
  */
 router
     .route("/getAllEvent")
-    .get(
-/*protectedRoute, restrictedRoute(["admin", "super-admin"]), */ eventController_1.getAllEvent);
+    .get(eventController_1.getAllEvent);
 /**
  * @swagger
- * /getAllPublishedEvent:
+ *  /api/v1/event/getAllPublishedEvent:
  *   get:
  *     summary: Get all published events
  *     tags: [Events]
@@ -96,7 +95,7 @@ router
     .get(authController_1.protectedRoute, eventController_1.getAllPublishedEvents);
 /**
  * @swagger
- * /getAllUnpublishedEvent:
+ *  /api/v1/event/getAllUnpublishedEvent:
  *   get:
  *     summary: Get all unpublished events
  *     tags: [Events]
@@ -111,7 +110,7 @@ router
     .get(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin"]), eventController_1.getAllUnPublishedEvents);
 /**
  * @swagger
- * /publishEvent:
+ *  /api/v1/event/publishEvent:
  *   patch:
  *     summary: Publish an event
  *     tags: [Events]
@@ -136,7 +135,7 @@ router
     .patch(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin"]), eventController_1.publishEvent);
 /**
  * @swagger
- * /unPublishEvent:
+ *  /api/v1/event/unPublishEvent:
  *   patch:
  *     summary: Unpublish an event
  *     tags: [Events]
@@ -161,9 +160,9 @@ router
     .patch(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin"]), eventController_1.unPublishEvent);
 /**
  * @swagger
- * /deleteEvent/{id}:
+ *  /api/v1/event/deleteEvent/{id}:
  *   patch:
- *     summary: Delete an event
+ *     summary: Delete an event (Unpublish it)
  *     tags: [Events]
  *     parameters:
  *       - in: path
@@ -181,5 +180,24 @@ router
 router
     .route("/deleteEvent/:id")
     .patch(authController_1.protectedRoute, (0, authController_1.restrictedRoute)(["admin"]), eventController_1.unPublishEvent);
+/**
+ * @swagger
+ *  /api/v1/event/event/{id}:
+ *   get:
+ *     summary: Get a specific event by ID
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: Event ID
+ *     responses:
+ *       200:
+ *         description: Event details
+ *       403:
+ *         description: Access forbidden
+ */
 router.route("/event/:id").get(eventController_1.getAnEvent);
 exports.default = router;

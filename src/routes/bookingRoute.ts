@@ -11,7 +11,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /bookEvent/{eventId}:
+ * /api/v1/booking/bookEvent/{eventId}:
  *   post:
  *     summary: Book an event
  *     tags: [Bookings]
@@ -32,7 +32,7 @@ router.route("/bookEvent/:eventId").post(protectedRoute, createEventBooking);
 
 /**
  * @swagger
- * /bookEvent/confirmPayment/{bookingId}:
+ * /api/v1/booking/bookEvent/confirmPayment/{bookingId}:
  *   get:
  *     summary: Confirm payment for an event booking
  *     tags: [Bookings]
@@ -55,7 +55,7 @@ router
 
 /**
  * @swagger
- * /getAllTheEventBookings:
+ * /api/v1/booking/getAllTheEventBookings:
  *   get:
  *     summary: Get all event bookings
  *     tags: [Bookings]
@@ -71,7 +71,7 @@ router
 
 /**
  * @swagger
- * /getUserBookedEvent:
+ * /api/v1/booking/getUserBookedEvent:
  *   get:
  *     summary: Get a user's event bookings
  *     tags: [Bookings]
