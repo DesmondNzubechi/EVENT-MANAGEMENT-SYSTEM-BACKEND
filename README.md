@@ -79,6 +79,17 @@ Welcome to the backend API of the Event Booking Platform! This API powers the co
    ```  
 
 ## API Endpoints  
+You can view and test all the available API endpoints by visiting the following link:
+
+[`EVENT MANAGEMENT API`](https://ueventapi.vercel.app/api-docs/)
+
+Once you're there, you'll find a comprehensive list of all the endpoints and how to interact with them.
+
+
+Make sure to set `process.env.backendUrl` to the correct URL for your backend server.
+
+
+This interactive documentation provides a user-friendly interface to test the API endpoints directly, with support for making requests like `GET`, `POST`, `PATCH`, and `DELETE`.
 
 ### Authentication  
 
