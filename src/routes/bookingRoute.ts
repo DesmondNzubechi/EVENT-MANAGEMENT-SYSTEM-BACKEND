@@ -83,4 +83,5 @@ router
  */
 router.route("/getUserBookedEvent").get(protectedRoute, getAUserEventBookings);
 
+
 export default router;
