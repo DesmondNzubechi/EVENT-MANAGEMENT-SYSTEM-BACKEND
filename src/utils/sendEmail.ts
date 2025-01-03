@@ -135,11 +135,10 @@ export const sendEmail = async (options: any) => {
               <div class="content">
                 <h2>Hello, ${options.name}!</h2>
                 <p>${options.message}</p>
-        <h1>Code : ${options.vCode}!</h1>
+        <h1>Code : ${options.vCode}</h1>
                 <!-- Action Button -->
                 <a href="${options.link}" class="button">${options.linkName}</a>
               </div>
-        
               <!-- Footer Section -->
               <div class="footer">
                 <p>The Uevent | Enugu, Nigeria | nzubechukwu@gmail.com</p>
